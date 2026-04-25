@@ -22,10 +22,14 @@ const Login = ({ onLogin }) => {
         localStorage.setItem('user', JSON.stringify(data));
         onLogin(data);
       } else {
-        notify(data.error || 'Login failed', 'error');
+        if (response.status === 401) {
+          notify('Invalid credentials! Please check your username and password.', 'error');
+        } else {
+          notify(data.error || 'Login failed. Please try again.', 'error');
+        }
       }
     } catch (error) {
-      notify('Connection error', 'error');
+      notify('Network Error! Cannot connect to the server. Please check your internet.', 'error');
     }
     setLoading(false);
   };
