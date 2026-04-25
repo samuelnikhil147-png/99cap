@@ -1,19 +1,9 @@
 {
   "version": 2,
-  "functions": {
-    "api/index.js": {
-      "memory": 1024,
-      "maxDuration": 10
-    }
-  },
   "rewrites": [
     {
-      "source": "/_/backend/(.*)",
+      "source": "/_/backend/:match*",
       "destination": "/api/index.js"
-    },
-    {
-      "source": "/((?!api/).*)",
-      "destination": "/$1"
     }
   ]
 }
