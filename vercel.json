@@ -7,7 +7,13 @@
     }
   },
   "rewrites": [
-    { "source": "/_/backend/:match*", "destination": "/api/index.js" },
-    { "source": "/(.*)", "destination": "/$1" }
+    {
+      "source": "/_/backend/(.*)",
+      "destination": "/api/index.js"
+    },
+    {
+      "source": "/((?!api/).*)",
+      "destination": "/$1"
+    }
   ]
 }
