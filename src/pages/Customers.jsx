@@ -10,14 +10,14 @@ const Customers = () => {
   useEffect(() => {
     const fetchCustomers = async () => {
       try {
-        const response = await fetch('/_/backend/api/customers');
+        const response = await fetch('https://99cap.vercel.app/_/backend/api/customers');
         if (!response.ok) throw new Error('Failed to fetch customers');
         const data = await response.json();
         
         const mappedCustomers = data.map(c => ({
           ...c,
           id: `C-${c.bedId}-${Date.now()}`,
-          avatar: `https://ui-avatars.com/_/backend/api/?name=${encodeURIComponent(c.name)}&background=random&color=fff&size=128`
+          avatar: `https://ui-avatars.comhttps://99cap.vercel.app/_/backend/api/?name=${encodeURIComponent(c.name)}&background=random&color=fff&size=128`
         }));
         
         setCustomers(mappedCustomers);

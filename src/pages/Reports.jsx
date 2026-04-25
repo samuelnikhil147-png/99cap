@@ -20,7 +20,7 @@ const Reports = () => {
   useEffect(() => {
     const fetchStats = async () => {
       try {
-        const response = await fetch('/_/backend/api/stats');
+        const response = await fetch('https://99cap.vercel.app/_/backend/api/stats');
         const data = await response.json();
         
         setStats({
