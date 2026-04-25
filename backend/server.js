@@ -61,19 +61,27 @@ app.get('/api/migrate', async (req, res) => {
       await User.create({ username: 'staff', password: 'staff', role: 'staff' });
     }
 
-    // 3. Create 99 Beds
-    const bedCount = await Bed.countDocuments();
-    if (bedCount === 0) {
-      const beds = [];
-      for (let i = 1; i <= 99; i++) {
-        beds.push({ id: i, status: 'Available', price: 350, unitType: 'Premium Unit', occupancyType: 'Standard Single Occupancy' });
+    // 3. Create 200 Beds
+    const currentBedCount = await Bed.countDocuments();
+    if (currentBedCount < 200) {
+      const bedsToAdd = [];
+      for (let i = currentBedCount + 1; i <= 200; i++) {
+        bedsToAdd.push({ 
+          id: i, 
+          status: 'Available', 
+          price: 350, 
+          unitType: 'Premium Unit', 
+          occupancyType: 'Standard Single Occupancy' 
+        });
       }
-      await Bed.insertMany(beds);
+      if (bedsToAdd.length > 0) {
+        await Bed.insertMany(bedsToAdd);
+      }
     }
 
     res.json({ 
       message: 'Migration successful!', 
-      details: 'Admin and Staff users verified. 99 beds verified.' 
+      details: `Admin and Staff users verified. Total beds: 200 (Added ${200 - currentBedCount} new beds).` 
     });
   } catch (error) {
     res.status(500).json({ error: 'Migration failed', details: error.message });

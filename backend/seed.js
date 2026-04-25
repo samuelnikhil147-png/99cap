@@ -25,15 +25,19 @@ async function seedData() {
       console.log('Staff user created');
     }
 
-    // 3. Create 99 Beds
-    const bedCount = await Bed.countDocuments();
-    if (bedCount === 0) {
-      const beds = [];
-      for (let i = 1; i <= 99; i++) {
-        beds.push({ id: i, status: 'Available', price: 350, unitType: 'Premium Unit', occupancyType: 'Standard Single Occupancy' });
+    // 3. Create 200 Beds
+    const currentBedCount = await Bed.countDocuments();
+    if (currentBedCount < 200) {
+      const bedsToAdd = [];
+      for (let i = currentBedCount + 1; i <= 200; i++) {
+        bedsToAdd.push({ id: i, status: 'Available', price: 350, unitType: 'Premium Unit', occupancyType: 'Standard Single Occupancy' });
       }
-      await Bed.insertMany(beds);
-      console.log('99 Beds created');
+      if (bedsToAdd.length > 0) {
+        await Bed.insertMany(bedsToAdd);
+        console.log(`${bedsToAdd.length} new beds created. Total: 200`);
+      }
+    } else {
+      console.log('200 or more beds already exist.');
     }
 
     console.log('MIGRATION COMPLETE!');
