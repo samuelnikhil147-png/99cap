@@ -20,7 +20,7 @@ const Reports = () => {
   useEffect(() => {
     const fetchStats = async () => {
       try {
-        const response = await fetch('/api/stats');
+        const response = await fetch('/_/backend/api/stats');
         const data = await response.json();
         
         setStats({

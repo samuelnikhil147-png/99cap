@@ -32,7 +32,7 @@ const Dashboard = () => {
 
   const fetchBeds = async () => {
     try {
-      const response = await fetch('/api/beds');
+      const response = await fetch('/_/backend/api/beds');
       const data = await response.json();
       setBeds(data);
       setLoading(false);
@@ -85,7 +85,7 @@ const Dashboard = () => {
     setReceiptData(finalReceiptData);
 
     try {
-      const response = await fetch('/api/checkout', {
+      const response = await fetch('/_/backend/api/checkout', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ 
@@ -114,7 +114,7 @@ const Dashboard = () => {
     if (!days || isNaN(days)) return;
     
     try {
-      const response = await fetch('/api/extend', {
+      const response = await fetch('/_/backend/api/extend', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ bedId, additionalDays: days })
@@ -141,7 +141,7 @@ const Dashboard = () => {
 
   const handleBookingConfirm = async (bedId, customerDetails) => {
     try {
-      const response = await fetch('/api/book', {
+      const response = await fetch('/_/backend/api/book', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ bedId, customer: customerDetails })

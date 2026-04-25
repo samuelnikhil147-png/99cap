@@ -11,11 +11,11 @@ const Analytics = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const statsRes = await fetch('/api/admin/analytics');
+        const statsRes = await fetch('/_/backend/api/admin/analytics');
         const statsData = await statsRes.json();
         setStats(statsData);
 
-        const billsRes = await fetch('/api/admin/bills');
+        const billsRes = await fetch('/_/backend/api/admin/bills');
         const billsData = await billsRes.json();
         setBills(billsData);
 
