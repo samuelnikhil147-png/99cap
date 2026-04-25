@@ -3,7 +3,7 @@ const mongoose = require('mongoose');
 const User = require('./models/User');
 const Bed = require('./models/Bed');
 
-const MONGO_URI = process.env.MONGODB_URI || "mongodb+srv://Vercel-Admin-atlas-champagne-arrow:25ZOadROXicpMyUz@atlas-champagne-arrow.striaeh.mongodb.net/?retryWrites=true&w=majority";
+const MONGO_URI = process.env.MONGODB_URI || "mongodb://127.0.0.1:27017/99cap";
 
 async function seedData() {
   try {

@@ -96,17 +96,7 @@ const Login = ({ onLogin }) => {
             </button>
           </form>
 
-          {/* Quick Help */}
-          <div className="mt-8 pt-8 border-t border-slate-50 dark:border-slate-800 grid grid-cols-2 gap-4">
-            <div className="p-3 bg-slate-50 dark:bg-slate-800/50 rounded-2xl text-center">
-              <p className="text-[8px] font-black text-slate-400 uppercase mb-1">Staff Access</p>
-              <p className="text-[10px] font-bold text-slate-600 dark:text-slate-300">staff / 1234</p>
-            </div>
-            <div className="p-3 bg-slate-50 dark:bg-slate-800/50 rounded-2xl text-center">
-              <p className="text-[8px] font-black text-slate-400 uppercase mb-1">Admin Access</p>
-              <p className="text-[10px] font-bold text-slate-600 dark:text-slate-300">admin / admin123</p>
-            </div>
-          </div>
+
         </div>
 
         <p className="text-center mt-8 text-slate-400 dark:text-slate-600 text-xs font-medium">
