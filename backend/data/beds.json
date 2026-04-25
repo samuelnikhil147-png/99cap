@@ -1,0 +1,7 @@
+[
+  { "id": 1, "status": "Booked", "customer": { "name": "Ramesh", "phone": "9876543210", "aadhar": "1234 5678 9012", "address": "Vijayawada", "checkIn": "2026-04-22", "checkOut": "2026-04-24" } },
+  { "id": 2, "status": "Booked", "customer": { "name": "Suresh", "phone": "9876543211", "aadhar": "2234 5678 9012", "address": "Vijayawada", "checkIn": "2026-04-23", "checkOut": "2026-04-24" } },
+  { "id": 3, "status": "Booked", "customer": { "name": "Anil", "phone": "9876543212", "aadhar": "3234 5678 9012", "address": "Vijayawada", "checkIn": "2026-04-21", "checkOut": "2026-04-24" } },
+  { "id": 4, "status": "Booked", "customer": { "name": "Kumar", "phone": "9876543213", "aadhar": "4234 5678 9012", "address": "Vijayawada", "checkIn": "2026-04-22", "checkOut": "2026-04-24" } },
+  { "id": 5, "status": "Booked", "customer": { "name": "Rahul", "phone": "9876543214", "aadhar": "5234 5678 9012", "address": "Vijayawada", "checkIn": "2026-04-23", "checkOut": "2026-04-24" } }
+]

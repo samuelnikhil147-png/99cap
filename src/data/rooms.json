@@ -1,0 +1,45 @@
+[
+  {
+    "id": 1,
+    "name": "Deluxe Twin Bed 2A",
+    "type": "Deluxe",
+    "price": 219,
+    "image": "https://images.unsplash.com/photo-1590490360182-c33d57733427?auto=format&fit=crop&q=80&w=800",
+    "facilities": ["WiFi", "TV", "AC", "Shower"],
+    "badge": "Hot"
+  },
+  {
+    "id": 2,
+    "name": "Deluxe Queen Size 11B",
+    "type": "Deluxe",
+    "price": 234,
+    "image": "https://images.unsplash.com/photo-1566665797739-1674de7a421a?auto=format&fit=crop&q=80&w=800",
+    "facilities": ["WiFi", "Jacuzzi", "Shower", "Mini Bar"],
+    "badge": "Hot"
+  },
+  {
+    "id": 3,
+    "name": "Deluxe Single Bed 8D",
+    "type": "Deluxe",
+    "price": 201,
+    "image": "https://images.unsplash.com/photo-1595571024048-45a59177f538?auto=format&fit=crop&q=80&w=800",
+    "facilities": ["Single Bed", "Shower", "WiFi"]
+  },
+  {
+    "id": 4,
+    "name": "Luxury King Size 3C",
+    "type": "Suite",
+    "price": 350,
+    "image": "https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?auto=format&fit=crop&q=80&w=800",
+    "facilities": ["Queen Size", "Jacuzzi", "Shower", "Mini Bar"],
+    "badge": "New"
+  },
+  {
+    "id": 5,
+    "name": "Presidential Suite 1A",
+    "type": "Presidential",
+    "price": 550,
+    "image": "https://images.unsplash.com/photo-1631049307264-da0ec9d70304?auto=format&fit=crop&q=80&w=800",
+    "facilities": ["King Size", "Private Pool", "Jacuzzi", "All-Inclusive"]
+  }
+]
