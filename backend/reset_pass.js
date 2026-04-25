@@ -2,7 +2,7 @@ require('dotenv').config();
 const mongoose = require('mongoose');
 const User = require('./models/User');
 
-const MONGO_URI = process.env.MONGODB_URI || "mongodb://127.0.0.1:27017/eetree_hotel";
+const MONGO_URI = process.env.MONGODB_URI || "mongodb://127.0.0.1:27017/99cap";
 
 async function resetPasswords() {
   try {

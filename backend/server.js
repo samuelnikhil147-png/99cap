@@ -15,13 +15,13 @@ app.use(cors());
 app.use(bodyParser.json());
 
 // MongoDB Connection
-const MONGO_URI = process.env.MONGODB_URI ? process.env.MONGODB_URI.trim() : null;
+const MONGO_URI = process.env.MONGODB_URI || "mongodb://127.0.0.1:27017/99cap";
 
 if (!MONGO_URI) {
   console.error('CRITICAL: MONGODB_URI is not defined in environment variables');
 }
 
-mongoose.connect(MONGO_URI || 'mongodb://localhost:27017/eetree_hotel', { 
+mongoose.connect(MONGO_URI || 'mongodb://localhost:27017/99cap', { 
   serverSelectionTimeoutMS: 10000,
   connectTimeoutMS: 10000 
 });
