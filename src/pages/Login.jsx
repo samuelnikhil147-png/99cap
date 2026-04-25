@@ -10,11 +10,19 @@ const Login = ({ onLogin }) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
+    const trimmedUsername = username.trim();
+    const trimmedPassword = password.trim();
+
     try {
-      const response = await fetch('https://99cap.vercel.app/_/backend/api/login', {
+      // Use relative path for production (Vercel) or localhost for local dev
+      const apiUrl = window.location.hostname === 'localhost' 
+        ? 'http://localhost:5000/api/login' 
+        : '/_/backend/api/login';
+
+      const response = await fetch(apiUrl, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ username, password })
+        body: JSON.stringify({ username: trimmedUsername, password: trimmedPassword })
       });
       const data = await response.json();
       if (response.ok) {

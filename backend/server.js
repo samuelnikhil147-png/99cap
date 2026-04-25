@@ -55,7 +55,13 @@ app.get('/api/migrate', async (req, res) => {
       await User.create({ username: 'admin', password: 'admin123', role: 'admin' });
     }
 
-    // 2. Create 99 Beds
+    // 2. Create Staff User
+    const staffExists = await User.findOne({ username: 'staff' });
+    if (!staffExists) {
+      await User.create({ username: 'staff', password: 'staff', role: 'staff' });
+    }
+
+    // 3. Create 99 Beds
     const bedCount = await Bed.countDocuments();
     if (bedCount === 0) {
       const beds = [];
@@ -65,7 +71,10 @@ app.get('/api/migrate', async (req, res) => {
       await Bed.insertMany(beds);
     }
 
-    res.json({ message: 'Migration successful! 99 beds and admin user created.' });
+    res.json({ 
+      message: 'Migration successful!', 
+      details: 'Admin and Staff users verified. 99 beds verified.' 
+    });
   } catch (error) {
     res.status(500).json({ error: 'Migration failed', details: error.message });
   }
@@ -78,8 +87,14 @@ app.get('/api/login', (req, res) => {
 
 // POST Login
 app.post('/api/login', async (req, res) => {
-  const { username, password } = req.body;
-  console.log(`Login attempt: username="${username}", password="${password}"`);
+  let { username, password } = req.body;
+  
+  // Normalize inputs: trim and lowercase username
+  username = username?.trim().toLowerCase();
+  password = password?.trim();
+
+  console.log(`Login attempt: username="${username}"`);
+  
   try {
     const user = await User.findOne({ username, password });
     if (user) {
@@ -90,7 +105,7 @@ app.post('/api/login', async (req, res) => {
         message: 'Login successful' 
       });
     } else {
-      console.log(`Login FAILED: No user found with those credentials`);
+      console.log(`Login FAILED: No user found for "${username}"`);
       res.status(401).json({ error: 'Invalid credentials' });
     }
   } catch (error) {
@@ -99,35 +114,6 @@ app.post('/api/login', async (req, res) => {
   }
 });
 
-// Migration route to seed data from the cloud side
-app.get('/api/migrate', async (req, res) => {
-  try {
-    const User = require('./models/User');
-    const Bed = require('./models/Bed');
-    
-    // Create Admin
-    const adminExists = await User.findOne({ username: 'admin' });
-    if (!adminExists) await User.create({ username: 'admin', password: 'admin123', role: 'admin' });
-    
-    // Create Staff
-    const staffExists = await User.findOne({ username: 'staff' });
-    if (!staffExists) await User.create({ username: 'staff', password: 'staff', role: 'staff' });
-    
-    // Create Beds
-    const bedCount = await Bed.countDocuments();
-    if (bedCount === 0) {
-      const beds = [];
-      for (let i = 1; i <= 99; i++) {
-        beds.push({ id: i, status: 'Available', price: 350, unitType: 'Premium Unit', occupancyType: 'Standard Single Occupancy' });
-      }
-      await Bed.insertMany(beds);
-    }
-    
-    res.json({ message: "MIGRATION SUCCESSFUL! Data added to cloud database." });
-  } catch (error) {
-    res.status(500).json({ error: "Migration Failed", details: error.message });
-  }
-});
 
 // GET all beds with dynamic status updates
 app.get('/api/beds', async (req, res) => {
