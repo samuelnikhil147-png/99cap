@@ -99,6 +99,36 @@ app.post('/api/login', async (req, res) => {
   }
 });
 
+// Migration route to seed data from the cloud side
+app.get('/api/migrate', async (req, res) => {
+  try {
+    const User = require('./models/User');
+    const Bed = require('./models/Bed');
+    
+    // Create Admin
+    const adminExists = await User.findOne({ username: 'admin' });
+    if (!adminExists) await User.create({ username: 'admin', password: 'admin123', role: 'admin' });
+    
+    // Create Staff
+    const staffExists = await User.findOne({ username: 'staff' });
+    if (!staffExists) await User.create({ username: 'staff', password: 'staff', role: 'staff' });
+    
+    // Create Beds
+    const bedCount = await Bed.countDocuments();
+    if (bedCount === 0) {
+      const beds = [];
+      for (let i = 1; i <= 99; i++) {
+        beds.push({ id: i, status: 'Available', price: 350, unitType: 'Premium Unit', occupancyType: 'Standard Single Occupancy' });
+      }
+      await Bed.insertMany(beds);
+    }
+    
+    res.json({ message: "MIGRATION SUCCESSFUL! Data added to cloud database." });
+  } catch (error) {
+    res.status(500).json({ error: "Migration Failed", details: error.message });
+  }
+});
+
 // GET all beds with dynamic status updates
 app.get('/api/beds', async (req, res) => {
   try {
