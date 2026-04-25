@@ -29,7 +29,7 @@ const CheckoutList = () => {
 
   const fetchCheckouts = async () => {
     try {
-      const response = await fetch('/_/backend/api/checkouts/today');
+      const response = await fetch('/api/checkouts/today');
       const data = await response.json();
       setCheckouts(data);
       setLoading(false);
@@ -82,7 +82,7 @@ const CheckoutList = () => {
     setReceiptData(finalReceiptData);
 
     try {
-      const response = await fetch('/_/backend/api/checkout', {
+      const response = await fetch('/api/checkout', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ 

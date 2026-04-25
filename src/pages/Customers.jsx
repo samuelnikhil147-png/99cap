@@ -10,7 +10,7 @@ const Customers = () => {
   useEffect(() => {
     const fetchCustomers = async () => {
       try {
-        const response = await fetch('/_/backend/api/customers');
+        const response = await fetch('/api/customers');
         if (!response.ok) throw new Error('Failed to fetch customers');
         const data = await response.json();
         
