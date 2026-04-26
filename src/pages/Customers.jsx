@@ -48,65 +48,65 @@ const Customers = () => {
 
     return (
       <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
-        <div className="absolute inset-0 bg-navy-950/60 backdrop-blur-md" onClick={onClose}></div>
-        <div className="bg-white dark:bg-slate-900 rounded-[2.5rem] w-full max-w-lg relative z-10 overflow-hidden shadow-2xl animate-in zoom-in-95 duration-200 border border-grey-100 dark:border-slate-800">
-          <div className="p-8 border-b border-grey-100 dark:border-slate-800 flex justify-between items-center bg-grey-50/50 dark:bg-slate-800/30">
-            <h2 className="text-2xl font-bold text-navy-900 dark:text-white">Booking Details</h2>
-            <button onClick={onClose} className="p-2 hover:bg-grey-100 dark:hover:bg-slate-700 rounded-xl transition-colors">
-              <X size={20} className="text-grey-400" />
+        <div className="absolute inset-0 bg-black/60 backdrop-blur-md" onClick={onClose}></div>
+        <div className="bg-white dark:bg-zinc-900 rounded-[2.5rem] w-full max-w-lg relative z-10 overflow-hidden shadow-2xl animate-in zoom-in-95 duration-200 border border-zinc-100 dark:border-zinc-800 transition-colors">
+          <div className="p-8 border-b border-zinc-100 dark:border-zinc-800 flex justify-between items-center bg-zinc-50/50 dark:bg-zinc-800/30 transition-colors">
+            <h2 className="text-2xl font-bold text-[#000000] dark:text-white transition-colors">Booking Details</h2>
+            <button onClick={onClose} className="p-2 hover:bg-zinc-100 dark:hover:bg-zinc-700 rounded-xl transition-colors">
+              <X size={20} className="text-slate-400" />
             </button>
           </div>
           
           <div className="p-8 space-y-6">
             <div className="flex items-center gap-6">
-              <div className="w-24 h-24 rounded-3xl overflow-hidden border-4 border-white dark:border-slate-800 shadow-xl">
+              <div className="w-24 h-24 rounded-3xl overflow-hidden border-4 border-white dark:border-zinc-800 shadow-xl transition-colors">
                 <img src={customer.avatar} alt="" className="w-full h-full object-cover" />
               </div>
               <div>
-                <h3 className="text-2xl font-bold text-navy-900 dark:text-white">{customer.name}</h3>
-                <span className="inline-block px-3 py-1 bg-navy-900/10 text-navy-900 rounded-lg text-[10px] font-bold uppercase mt-2">
+                <h3 className="text-2xl font-bold text-[#000000] dark:text-white transition-colors">{customer.name}</h3>
+                <span className="inline-block px-3 py-1 bg-[#000000]/10 dark:bg-white/10 text-[#000000] dark:text-white rounded-lg text-[10px] font-bold uppercase mt-2 transition-colors">
                   Bed Number #{customer.bedId}
                 </span>
               </div>
             </div>
 
             <div className="grid grid-cols-2 gap-4">
-              <div className="p-4 bg-grey-50 dark:bg-slate-800/50 rounded-2xl border border-grey-100 dark:border-slate-700">
-                <p className="text-[10px] font-bold text-grey-400 uppercase tracking-widest mb-1">Stay Duration</p>
-                <p className="text-sm font-semibold text-navy-900 dark:text-white">{stayDays} Days</p>
+              <div className="p-4 bg-zinc-50 dark:bg-zinc-800/50 rounded-2xl border border-zinc-100 dark:border-zinc-700 transition-colors">
+                <p className="text-[10px] font-bold text-slate-400 dark:text-zinc-500 uppercase tracking-widest mb-1 transition-colors">Stay Duration</p>
+                <p className="text-sm font-semibold text-[#000000] dark:text-white transition-colors">{stayDays} Days</p>
               </div>
-              <div className="p-4 bg-grey-50 dark:bg-slate-800/50 rounded-2xl border border-grey-100 dark:border-slate-700">
-                <p className="text-[10px] font-bold text-grey-400 uppercase tracking-widest mb-1">Total Bill</p>
-                <p className="text-sm font-semibold text-navy-900">₹{stayDays * 350}</p>
+              <div className="p-4 bg-zinc-50 dark:bg-zinc-800/50 rounded-2xl border border-zinc-100 dark:border-zinc-700 transition-colors">
+                <p className="text-[10px] font-bold text-slate-400 dark:text-zinc-500 uppercase tracking-widest mb-1 transition-colors">Total Bill</p>
+                <p className="text-sm font-bold text-indigo-600 dark:text-indigo-400 transition-colors">₹{stayDays * 350}</p>
               </div>
             </div>
 
             <div className="space-y-4">
-              <div className="flex items-center gap-4 text-grey-400 dark:text-slate-400">
-                <div className="w-10 h-10 rounded-xl bg-grey-50 dark:bg-slate-800 flex items-center justify-center shrink-0">
-                  <Phone size={18} className="text-navy-900" />
+              <div className="flex items-center gap-4 text-slate-500 dark:text-zinc-400">
+                <div className="w-10 h-10 rounded-xl bg-zinc-50 dark:bg-zinc-800 flex items-center justify-center shrink-0 transition-colors">
+                  <Phone size={18} className="text-[#000000] dark:text-white" />
                 </div>
                 <div>
-                  <p className="text-[10px] font-bold text-grey-400 uppercase">Contact</p>
-                  <p className="text-sm font-semibold text-navy-900 dark:text-white">+91 {customer.phone}</p>
+                  <p className="text-[10px] font-bold text-slate-400 dark:text-zinc-500 uppercase transition-colors">Contact</p>
+                  <p className="text-sm font-semibold text-[#000000] dark:text-white transition-colors">+91 {customer.phone}</p>
                 </div>
               </div>
-              <div className="flex items-center gap-4 text-grey-400 dark:text-slate-400">
-                <div className="w-10 h-10 rounded-xl bg-grey-50 dark:bg-slate-800 flex items-center justify-center shrink-0">
-                  <CreditCard size={18} className="text-navy-900" />
+              <div className="flex items-center gap-4 text-slate-500 dark:text-zinc-400">
+                <div className="w-10 h-10 rounded-xl bg-zinc-50 dark:bg-zinc-800 flex items-center justify-center shrink-0 transition-colors">
+                  <CreditCard size={18} className="text-[#000000] dark:text-white" />
                 </div>
                 <div>
-                  <p className="text-[10px] font-bold text-grey-400 uppercase">Aadhaar ID</p>
-                  <p className="text-sm font-semibold text-navy-900 dark:text-white">{customer.aadhar}</p>
+                  <p className="text-[10px] font-bold text-slate-400 dark:text-zinc-500 uppercase transition-colors">Aadhaar ID</p>
+                  <p className="text-sm font-semibold text-[#000000] dark:text-white transition-colors">{customer.aadhar}</p>
                 </div>
               </div>
-              <div className="flex items-center gap-4 text-grey-400 dark:text-slate-400">
-                <div className="w-10 h-10 rounded-xl bg-grey-50 dark:bg-slate-800 flex items-center justify-center shrink-0">
-                  <MapPin size={18} className="text-navy-900" />
+              <div className="flex items-center gap-4 text-slate-500 dark:text-zinc-400">
+                <div className="w-10 h-10 rounded-xl bg-zinc-50 dark:bg-zinc-800 flex items-center justify-center shrink-0 transition-colors">
+                  <MapPin size={18} className="text-[#000000] dark:text-white" />
                 </div>
                 <div>
-                  <p className="text-[10px] font-bold text-grey-400 uppercase">Address</p>
-                  <p className="text-sm font-semibold text-navy-900 dark:text-white leading-tight">{customer.address}</p>
+                  <p className="text-[10px] font-bold text-slate-400 dark:text-zinc-500 uppercase transition-colors">Address</p>
+                  <p className="text-sm font-semibold text-[#000000] dark:text-white leading-tight transition-colors">{customer.address}</p>
                 </div>
               </div>
             </div>
@@ -134,13 +134,13 @@ const Customers = () => {
         </div>
       </div>
 
-      <div className="bg-white dark:bg-slate-900 p-6 rounded-[2.5rem] border border-slate-100 dark:border-slate-800 card-shadow transition-colors duration-300">
-        <div className="relative">
-          <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 dark:text-slate-500" size={18} />
+      <div className="bg-white dark:bg-[#000000] p-4 lg:p-6 rounded-[2rem] lg:rounded-[2.5rem] border border-zinc-100 dark:border-zinc-800 shadow-sm transition-colors duration-300">
+        <div className="relative group">
+          <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-[#000000] dark:text-white transition-colors" size={18} />
           <input 
             type="text" 
             placeholder="Search by name, phone, or room number..." 
-            className="w-full bg-grey-50 dark:bg-slate-800/50 border-none rounded-2xl py-3.5 pl-12 pr-4 text-sm font-medium dark:text-white placeholder:text-grey-400 dark:placeholder:text-slate-500 focus:ring-2 focus:ring-navy-900/10 transition-all outline-none"
+            className="w-full bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-700 rounded-xl lg:rounded-2xl py-3 lg:py-4 pl-12 pr-4 text-sm font-bold text-[#000000] dark:text-white placeholder:text-slate-400 dark:placeholder:text-zinc-500 focus:ring-4 focus:ring-black/5 dark:focus:ring-white/5 focus:border-[#000000] dark:focus:border-white transition-all outline-none"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
           />
@@ -152,56 +152,56 @@ const Customers = () => {
           <div key={customer.id} className="group bg-white dark:bg-slate-800 rounded-[2.5rem] border border-slate-100 dark:border-slate-700 card-shadow p-6 hover:translate-y-[-4px] transition-all duration-300">
             <div className="flex justify-between items-start mb-6">
               <div className="relative">
-                <div className="w-20 h-20 rounded-3xl overflow-hidden shadow-inner bg-grey-50 dark:bg-slate-700 border-4 border-white dark:border-slate-800 shadow-lg">
+                <div className="w-20 h-20 rounded-3xl overflow-hidden shadow-inner bg-zinc-50 dark:bg-zinc-800 border-4 border-white dark:border-zinc-800 shadow-lg transition-colors">
                   <img src={customer.avatar} alt={customer.name} className="w-full h-full object-cover" />
                 </div>
-                <div className="absolute -bottom-2 -right-2 px-3 py-1 rounded-lg text-[10px] font-semibold border border-emerald-200 dark:border-emerald-900/30 bg-emerald-50 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-400 shadow-sm">
+                <div className="absolute -bottom-2 -right-2 px-3 py-1 rounded-lg text-[10px] font-semibold border border-emerald-200 dark:border-emerald-900/30 bg-emerald-50 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-400 shadow-sm transition-colors">
                   {customer.status}
                 </div>
               </div>
-              <div className="bg-navy-900/10 text-navy-900 px-4 py-2 rounded-2xl flex items-center gap-2">
+              <div className="bg-[#000000]/10 dark:bg-white/10 text-[#000000] dark:text-white px-4 py-2 rounded-2xl flex items-center gap-2 transition-colors">
                 <Hash size={14} />
                 <span className="text-sm font-bold">Room {customer.bedId}</span>
               </div>
             </div>
 
             <div className="mb-6">
-              <h3 className="text-xl font-semibold text-slate-900 dark:text-white">{customer.name}</h3>
+              <h3 className="text-xl font-semibold text-[#000000] dark:text-white transition-colors">{customer.name}</h3>
               <div className="flex items-center gap-2 mt-1">
                 <div className="flex">
                   {[...Array(5)].map((_, i) => (
                     <Star key={i} size={12} className="fill-amber-400 text-amber-400" />
                   ))}
                 </div>
-                <span className="text-[10px] font-semibold text-slate-400 dark:text-slate-500 uppercase tracking-widest">Verified Guest</span>
+                <span className="text-[10px] font-semibold text-slate-400 dark:text-zinc-500 uppercase tracking-widest transition-colors">Verified Guest</span>
               </div>
             </div>
 
             <div className="space-y-3 mb-8">
-              <div className="flex items-center gap-3 text-grey-400 dark:text-slate-400">
-                <Phone size={16} className="shrink-0 text-navy-900" />
+              <div className="flex items-center gap-3 text-slate-500 dark:text-zinc-400 transition-colors">
+                <Phone size={16} className="shrink-0 text-[#000000] dark:text-white" />
                 <span className="text-sm font-semibold">+91 {customer.phone}</span>
               </div>
-              <div className="flex items-center gap-3 text-grey-400 dark:text-slate-400">
-                <MapPin size={16} className="shrink-0 text-navy-900" />
+              <div className="flex items-center gap-3 text-slate-500 dark:text-zinc-400 transition-colors">
+                <MapPin size={16} className="shrink-0 text-[#000000] dark:text-white" />
                 <span className="text-sm font-medium">{customer.address}</span>
               </div>
-              <div className="flex items-center gap-3 text-grey-400 dark:text-slate-400">
-                <Calendar size={16} className="shrink-0 text-navy-900" />
+              <div className="flex items-center gap-3 text-slate-500 dark:text-zinc-400 transition-colors">
+                <Calendar size={16} className="shrink-0 text-[#000000] dark:text-white" />
                 <span className="text-xs font-medium">Check-in: {customer.checkIn}</span>
               </div>
             </div>
 
-            <div className="grid grid-cols-1 gap-4 pt-6 border-t border-grey-50 dark:border-slate-700">
+            <div className="grid grid-cols-1 gap-4 pt-6 border-t border-zinc-100 dark:border-zinc-800 transition-colors">
               <div className="flex items-center justify-between">
-                <p className="text-[10px] font-semibold text-grey-400 dark:text-slate-500 uppercase tracking-wider">Aadhaar Number</p>
-                <span className="text-xs font-bold text-navy-900 dark:text-white">{customer.aadhar}</span>
+                <p className="text-[10px] font-semibold text-slate-400 dark:text-zinc-500 uppercase tracking-wider">Aadhaar Number</p>
+                <span className="text-xs font-bold text-[#000000] dark:text-white transition-colors">{customer.aadhar}</span>
               </div>
             </div>
             
             <button 
               onClick={() => setSelectedCustomer(customer)}
-              className="w-full mt-6 py-3 rounded-2xl bg-navy-900 text-white text-sm font-semibold hover:bg-navy-800 shadow-lg shadow-navy-900/20 transition-all transform group-hover:scale-[1.02]"
+              className="w-full mt-6 py-4 rounded-2xl bg-[#000000] dark:bg-white text-white dark:text-[#000000] text-sm font-bold hover:bg-[#14B8A6] dark:hover:bg-[#14B8A6] dark:hover:text-white shadow-lg shadow-black/10 transition-all transform group-hover:scale-[1.02] active:scale-95"
             >
               View Booking Details
             </button>

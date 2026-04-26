@@ -47,8 +47,8 @@ const Login = ({ onLogin }) => {
       <div className="w-full max-w-md">
         {/* Logo/Brand */}
         <div className="text-center mb-10 animate-in fade-in slide-in-from-top-10 duration-1000">
-          <div className="w-20 h-20 bg-indigo-600 rounded-[2rem] flex items-center justify-center mx-auto mb-6 shadow-2xl shadow-indigo-600/30">
-            <ShieldCheck size={40} className="text-white" />
+          <div className="w-28 h-28 bg-white rounded-[2rem] flex items-center justify-center mx-auto mb-6 shadow-2xl overflow-hidden">
+            <img src="/logo.png" alt="99 Capsule Logo" className="w-full h-full object-cover" />
           </div>
           <h1 className="text-4xl font-black text-slate-900 dark:text-white tracking-tight">99 Capsule</h1>
           <p className="text-slate-500 dark:text-slate-400 font-bold mt-2 uppercase tracking-[0.2em] text-[10px]">Management System</p>
@@ -70,7 +70,7 @@ const Login = ({ onLogin }) => {
                   required
                   type="text" 
                   placeholder="staff or admin"
-                  className="w-full h-14 bg-slate-50 dark:bg-slate-800/50 border border-slate-100 dark:border-slate-800 rounded-2xl pl-12 pr-4 text-sm font-bold text-slate-900 dark:text-white focus:ring-4 focus:ring-indigo-500/10 focus:border-indigo-500 transition-all outline-none"
+                  className="w-full h-14 bg-slate-50 dark:bg-slate-800/50 border border-slate-100 dark:border-slate-800 rounded-2xl pl-12 pr-4 text-sm font-bold text-slate-900 dark:text-white focus:ring-4 focus:ring-black/5 dark:focus:ring-white/5 focus:border-[#000000] dark:focus:border-white transition-all outline-none"
                   value={username}
                   onChange={(e) => setUsername(e.target.value)}
                 />
@@ -80,12 +80,12 @@ const Login = ({ onLogin }) => {
             <div className="space-y-2">
               <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Password</label>
               <div className="relative group">
-                <Lock size={18} className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-indigo-600 transition-colors" />
+                <Lock size={18} className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-[#000000] dark:group-focus-within:text-white transition-colors" />
                 <input 
                   required
                   type="password" 
                   placeholder="••••••••"
-                  className="w-full h-14 bg-slate-50 dark:bg-slate-800/50 border border-slate-100 dark:border-slate-800 rounded-2xl pl-12 pr-4 text-sm font-bold text-slate-900 dark:text-white focus:ring-4 focus:ring-indigo-500/10 focus:border-indigo-500 transition-all outline-none"
+                  className="w-full h-14 bg-slate-50 dark:bg-slate-800/50 border border-slate-100 dark:border-slate-800 rounded-2xl pl-12 pr-4 text-sm font-bold text-slate-900 dark:text-white focus:ring-4 focus:ring-black/5 dark:focus:ring-white/5 focus:border-[#000000] dark:focus:border-white transition-all outline-none"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                 />
@@ -95,7 +95,7 @@ const Login = ({ onLogin }) => {
             <button 
               type="submit"
               disabled={loading}
-              className="w-full h-14 bg-indigo-600 text-white rounded-2xl font-black shadow-xl shadow-indigo-600/20 hover:bg-indigo-700 active:scale-95 transition-all flex items-center justify-center gap-2 group disabled:opacity-70"
+              className="w-full h-14 bg-[#000000] dark:bg-white text-white dark:text-[#000000] rounded-2xl font-black shadow-xl shadow-black/10 dark:shadow-none hover:bg-[#14B8A6] dark:hover:bg-[#14B8A6] dark:hover:text-white active:scale-95 transition-all flex items-center justify-center gap-2 group disabled:opacity-70"
             >
               {loading ? (
                 <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>

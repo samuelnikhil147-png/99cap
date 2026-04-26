@@ -1,12 +1,20 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { useLocation } from 'react-router-dom';
 import { User, Bell, Shield, Globe, CreditCard, Laptop, Save, ChevronRight, Moon, Sun } from 'lucide-react';
 import { notify } from '../components/Toast';
 
 const Settings = () => {
+  const location = useLocation();
   const [activeTab, setActiveTab] = useState('General');
   const [darkMode, setDarkMode] = useState(() => {
     return localStorage.getItem('theme') === 'dark';
   });
+
+  useEffect(() => {
+    if (location.state?.tab) {
+      setActiveTab(location.state.tab);
+    }
+  }, [location.state]);
 
   const toggleDarkMode = () => {
     const newMode = !darkMode;
@@ -40,26 +48,26 @@ const Settings = () => {
           <div className="space-y-8 animate-in fade-in slide-in-from-right-4 duration-500">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm font-bold text-navy-900 dark:text-white">Dark Mode</p>
-                <p className="text-xs text-grey-400">Enable dark theme for the entire dashboard.</p>
+                <p className="text-sm font-bold text-[#000000] dark:text-white">Dark Mode</p>
+                <p className="text-xs text-[#6B7280]">Enable dark theme for the entire dashboard.</p>
               </div>
               <button 
                 onClick={toggleDarkMode}
-                className={`w-14 h-8 rounded-full transition-all duration-300 relative flex items-center px-1 ${darkMode ? 'bg-navy-900' : 'bg-grey-200'}`}
+                className={`w-14 h-8 rounded-full transition-all duration-300 relative flex items-center px-1 ${darkMode ? 'bg-[#000000]' : 'bg-zinc-200'}`}
               >
                 <div className={`w-6 h-6 rounded-full bg-white shadow-md transition-all duration-300 flex items-center justify-center transform ${darkMode ? 'translate-x-6' : 'translate-x-0'}`}>
-                  {darkMode ? <Moon size={12} className="text-navy-900" /> : <Sun size={12} className="text-amber-500" />}
+                  {darkMode ? <Moon size={12} className="text-[#000000]" /> : <Sun size={12} className="text-amber-500" />}
                 </div>
               </button>
             </div>
 
             <div className="space-y-4">
               <div>
-                <label className="text-[10px] font-bold text-grey-400 uppercase tracking-widest mb-2 block">Hotel Display Name</label>
+                <label className="text-[10px] font-bold text-[#6B7280] uppercase tracking-widest mb-2 block">Hotel Display Name</label>
                 <input 
                   type="text" 
                   defaultValue="99 Capsule"
-                  className="w-full bg-grey-50 border-none rounded-2xl py-3.5 px-4 text-sm font-bold text-navy-900 focus:ring-2 focus:ring-navy-900/10 transition-all outline-none"
+                  className="w-full bg-zinc-50 dark:bg-zinc-800 border-none rounded-2xl py-3.5 px-4 text-sm font-bold text-[#000000] dark:text-white focus:ring-2 focus:ring-[#000000]/10 transition-all outline-none"
                 />
               </div>
               <div>
@@ -73,15 +81,15 @@ const Settings = () => {
             </div>
 
             <div className="space-y-4">
-              <p className="text-sm font-bold text-navy-900">Automatic Backup</p>
+              <p className="text-sm font-bold text-[#000000] dark:text-white">Automatic Backup</p>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                <div className="p-4 bg-navy-900/10 border border-navy-900/20 rounded-2xl flex items-center justify-between cursor-pointer">
-                   <span className="text-sm font-bold text-navy-900">Daily Cloud Sync</span>
-                   <div className="w-10 h-6 bg-navy-900 rounded-full relative shadow-inner"><div className="absolute right-1 top-1 w-4 h-4 bg-white rounded-full"></div></div>
+                <div className="p-4 bg-[#000000]/5 dark:bg-white/5 border border-[#000000]/10 dark:border-white/10 rounded-2xl flex items-center justify-between cursor-pointer">
+                   <span className="text-sm font-bold text-[#000000] dark:text-white">Daily Cloud Sync</span>
+                   <div className="w-10 h-6 bg-[#000000] dark:bg-[#14B8A6] rounded-full relative shadow-inner transition-colors"><div className="absolute right-1 top-1 w-4 h-4 bg-white rounded-full"></div></div>
                 </div>
-                <div className="p-4 bg-grey-50 border border-grey-100 rounded-2xl flex items-center justify-between cursor-pointer">
-                   <span className="text-sm font-bold text-grey-400">Local Cache</span>
-                   <div className="w-10 h-6 bg-grey-200 rounded-full relative"><div className="absolute left-1 top-1 w-4 h-4 bg-white rounded-full shadow-sm"></div></div>
+                <div className="p-4 bg-zinc-50 dark:bg-zinc-800 border border-zinc-100 dark:border-zinc-700 rounded-2xl flex items-center justify-between cursor-pointer">
+                   <span className="text-sm font-bold text-[#6B7280]">Local Cache</span>
+                   <div className="w-10 h-6 bg-zinc-200 dark:bg-zinc-700 rounded-full relative"><div className="absolute left-1 top-1 w-4 h-4 bg-white rounded-full shadow-sm"></div></div>
                 </div>
               </div>
             </div>
@@ -91,24 +99,24 @@ const Settings = () => {
       case 'Profile':
         return (
           <div className="space-y-8 animate-in fade-in slide-in-from-right-4 duration-500">
-              <div className="flex items-center gap-6 pb-6 border-b border-grey-50">
+              <div className="flex items-center gap-6 pb-6 border-b border-zinc-50 dark:border-zinc-800 transition-colors">
                  <div className="relative group">
-                   <div className="w-24 h-24 rounded-3xl overflow-hidden ring-4 ring-navy-900/10">
+                   <div className="w-24 h-24 rounded-3xl overflow-hidden ring-4 ring-[#000000]/10 dark:ring-white/10">
                      <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=Admin" className="w-full h-full object-cover" />
                    </div>
-                   <button className="absolute -bottom-2 -right-2 bg-navy-900 text-white p-2 rounded-xl shadow-lg hover:bg-navy-800 transition-all">
+                   <button className="absolute -bottom-2 -right-2 bg-[#000000] dark:bg-[#14B8A6] text-white dark:text-[#000000] p-2 rounded-xl shadow-lg hover:opacity-90 transition-all">
                      <Sun size={14} />
                    </button>
                  </div>
                  <div>
-                   <h4 className="text-xl font-bold text-navy-900">Administrator</h4>
-                   <p className="text-sm text-grey-400">System Admin</p>
+                   <h4 className="text-xl font-bold text-[#000000] dark:text-white">Administrator</h4>
+                   <p className="text-sm text-[#6B7280]">System Admin</p>
                  </div>
               </div>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                  <div>
-                   <label className="text-[10px] font-bold text-grey-400 uppercase tracking-widest mb-2 block">Admin Email</label>
-                   <input type="email" defaultValue="admin@eetree.com" className="w-full bg-grey-50 border-none rounded-2xl py-3.5 px-4 text-sm font-bold text-navy-900 focus:ring-2 focus:ring-navy-900/10 transition-all outline-none" />
+                   <label className="text-[10px] font-bold text-[#6B7280] uppercase tracking-widest mb-2 block">Admin Email</label>
+                   <input type="email" defaultValue="admin@99capsule.com" className="w-full bg-zinc-50 dark:bg-zinc-800 border-none rounded-2xl py-3.5 px-4 text-sm font-bold text-[#000000] dark:text-white focus:ring-2 focus:ring-[#000000]/10 transition-all outline-none" />
                  </div>
                  <div>
                    <label className="text-[10px] font-bold text-grey-400 uppercase tracking-widest mb-2 block">Mobile Number</label>
@@ -221,8 +229,8 @@ const Settings = () => {
   return (
     <div className="max-w-5xl mx-auto space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-700 pb-12 transition-colors duration-300">
       <div>
-        <h1 className="text-3xl font-bold text-navy-900 dark:text-white tracking-tight">System Settings</h1>
-        <p className="text-grey-400 dark:text-slate-400 mt-1">Manage your hotel dashboard preferences and account.</p>
+        <h1 className="text-3xl font-bold text-[#000000] dark:text-white tracking-tight">System Settings</h1>
+        <p className="text-[#6B7280] dark:text-zinc-400 mt-1 transition-colors">Manage your hotel dashboard preferences and account.</p>
       </div>
 
       <div className="flex flex-col md:flex-row gap-8">
@@ -232,38 +240,38 @@ const Settings = () => {
             <button
               key={tab.name}
               onClick={() => setActiveTab(tab.name)}
-              className={`w-full flex items-center justify-between px-4 py-3.5 rounded-2xl transition-all duration-200 ${
+              className={`w-full flex items-center justify-between px-4 py-3.5 rounded-2xl transition-all duration-300 ${
                 activeTab === tab.name 
-                ? 'bg-navy-900 text-white shadow-lg shadow-navy-900/20 active:scale-95' 
-                : 'text-grey-400 hover:bg-white dark:hover:bg-slate-800 hover:text-navy-900 dark:hover:text-white'
+                ? 'bg-[#000000] text-white shadow-xl shadow-black/10 active:scale-95' 
+                : 'text-[#6B7280] hover:bg-[#F3F4F6] dark:hover:bg-zinc-800 hover:text-[#000000] dark:hover:text-white'
               }`}
             >
               <div className="flex items-center gap-3">
-                <tab.icon size={20} />
+                <tab.icon size={20} className="shrink-0" />
                 <span className="text-sm font-bold">{tab.name}</span>
               </div>
-              {activeTab !== tab.name && <ChevronRight size={16} className="text-grey-200 dark:text-slate-600" />}
+              {activeTab !== tab.name && <ChevronRight size={16} className="text-[#D1D5DB] shrink-0" />}
             </button>
           ))}
         </div>
 
         {/* Content Area */}
         <div className="flex-1 space-y-6">
-          <div className="bg-white dark:bg-slate-900 rounded-[2.5rem] border border-grey-100 dark:border-slate-800 card-shadow overflow-hidden flex flex-col min-h-[500px] transition-colors duration-300">
-            <div className="p-8 border-b border-grey-50 dark:border-slate-800">
-              <h3 className="text-xl font-bold text-navy-900 dark:text-white">{activeTab} Settings</h3>
-              <p className="text-sm text-grey-400 dark:text-slate-400 mt-1">Configure your {activeTab.toLowerCase()} preferences here.</p>
+          <div className="bg-white dark:bg-[#000000] rounded-[2.5rem] border border-grey-100 dark:border-zinc-800 card-shadow overflow-hidden flex flex-col min-h-[500px] transition-colors duration-300">
+            <div className="p-8 border-b border-grey-50 dark:border-zinc-800 transition-colors">
+              <h3 className="text-xl font-bold text-[#000000] dark:text-white transition-colors">{activeTab} Settings</h3>
+              <p className="text-sm text-[#6B7280] dark:text-zinc-400 mt-1 transition-colors">Configure your {activeTab.toLowerCase()} preferences here.</p>
             </div>
 
             <div className="p-8 flex-1">
               {renderTabContent()}
             </div>
 
-            <div className="p-8 bg-grey-50/50 dark:bg-slate-800/30 flex items-center justify-between border-t border-grey-50 dark:border-slate-800">
-              <p className="text-xs text-grey-400 dark:text-slate-500">Last saved on April 20, 2024 at 14:45 PM</p>
+            <div className="p-8 bg-grey-50/50 dark:bg-zinc-800/30 flex items-center justify-between border-t border-grey-50 dark:border-zinc-800 transition-colors">
+              <p className="text-xs text-[#6B7280] dark:text-zinc-500 transition-colors">Last saved on April 20, 2024 at 14:45 PM</p>
               <button 
                 onClick={handleSave}
-                className="bg-navy-900 text-white px-8 py-3 rounded-2xl font-bold shadow-lg shadow-navy-900/20 hover:bg-navy-800 transition-all flex items-center gap-2 active:scale-95"
+                className="bg-[#000000] dark:bg-white text-white dark:text-[#000000] px-8 py-3 rounded-2xl font-bold shadow-lg shadow-black/20 hover:bg-[#14B8A6] dark:hover:bg-[#14B8A6] dark:hover:text-white transition-all flex items-center gap-2 active:scale-95"
               >
                 <Save size={18} />
                 <span>Save Changes</span>

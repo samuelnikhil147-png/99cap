@@ -8,7 +8,7 @@ import { notify } from '../components/Toast';
 import BedBookingModal from '../components/BedBookingModal';
 import CheckoutConfirmationModal from '../components/CheckoutConfirmationModal';
 import ThermalReceipt from '../components/ThermalReceipt';
-import bedMainImg from '../assets/bed-main.png';
+import bedMainImg from '../assets/available.png';
 import bookedImg from '../assets/booked.png';
 import maintenanceImg from '../assets/maintenance.png';
 
@@ -35,8 +35,8 @@ const Dashboard = () => {
     }, 500);
   };
 
-  const fetchBeds = async () => {
-    setLoading(true);
+  const fetchBeds = async (silent = false) => {
+    if (!silent) setLoading(true);
     try {
       const response = await fetch('https://99cap.vercel.app/_/backend/api/beds');
       const data = await response.json();
@@ -106,9 +106,9 @@ const Dashboard = () => {
         // Trigger print AFTER successful save
         setTimeout(() => {
           printBill(finalReceiptData.customerName);
-          fetchBeds();
+          fetchBeds(true);
           setPendingBed(null);
-        }, 300);
+        }, 100);
       }
     } catch (error) {
       notify('Server error - Could not save checkout', 'error');
@@ -146,17 +146,19 @@ const Dashboard = () => {
     }
   };
 
-  const handleMaintenance = async (bedId) => {
+  const handleMaintenance = async (bedId, currentStatus) => {
+    const targetStatus = currentStatus === 'Maintenance' ? 'Available' : 'Maintenance';
     try {
       const response = await fetch('https://99cap.vercel.app/_/backend/api/maintenance', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ bedId, status: actionBed.status === 'Maintenance' ? 'Available' : 'Maintenance' })
+        body: JSON.stringify({ bedId, status: targetStatus })
       });
       if (response.ok) {
-        notify(`Bed #${bedId} status updated`, 'success');
+        notify(`Bed #${bedId} is now ${targetStatus}`, 'success');
         setIsActionModalOpen(false);
-        fetchBeds();
+        fetchBeds(true);
+        fetchStats();
       }
     } catch (error) {
       notify('Operation failed', 'error');
@@ -179,7 +181,7 @@ const Dashboard = () => {
 
       if (response.ok) {
         notify(`Bed #${bedId} booked successfully!`, 'success');
-        fetchBeds(); 
+        fetchBeds(true); 
       } else {
         const err = await response.json();
         notify(err.error || 'Booking failed', 'error');
@@ -200,6 +202,7 @@ const Dashboard = () => {
     total: beds.length,
     available: beds.filter(b => b.status === 'Available').length,
     active: beds.filter(b => ['Booked', 'Checkout Due Today', 'Overstayed'].includes(b.status)).length,
+    maintenance: beds.filter(b => b.status === 'Maintenance').length
   };
 
   const statusConfig = {
@@ -223,56 +226,56 @@ const Dashboard = () => {
   ];
 
   return (
-    <div className="space-y-6 pb-10 animate-in fade-in duration-1000">
+    <div className="space-y-4 lg:space-y-6 pb-10 animate-in fade-in duration-1000 px-1 sm:px-0">
       {/* Page Header */}
-      <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-6">
+      <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4 lg:gap-6">
         <div>
-          <h1 className="text-[26px] font-bold text-[#1D1D1F] tracking-tight leading-none">Reception Desk</h1>
-          <p className="text-[#86868B] font-medium text-[13px] mt-1.5">Enterprise Management Suite</p>
+          <h1 className="text-[22px] lg:text-[26px] font-bold text-[#1D1D1F] dark:text-white tracking-tight leading-none transition-colors">Reception Desk</h1>
+          <p className="text-[#86868B] dark:text-zinc-400 font-medium text-[12px] lg:text-[13px] mt-1 lg:mt-1.5 transition-colors">Enterprise Management Suite</p>
         </div>
 
-        <div className="flex gap-2">
+        <div className="grid grid-cols-2 sm:flex gap-2">
           {[
-            { label: 'Inventory', value: stats.total, color: 'text-[#000000]' },
+            { label: 'Inventory', value: stats.total, color: 'text-[#000000] dark:text-white' },
             { label: 'Available', value: stats.available, color: 'text-[#10B981]' },
-            { label: 'Booked', value: stats.active, color: 'text-[#0066CC]' },
+            { label: 'Booked', value: stats.active, color: 'text-[#0066CC] dark:text-[#38BDF8]' },
             { label: 'Maintenance', value: stats.maintenance, color: 'text-[#D97706]' }
           ].map((stat, i) => (
-            <div key={i} className="bg-white px-4 h-11 rounded-xl flex items-center gap-3 border border-[#F2F2F2] shadow-sm">
-               <span className="text-[11px] font-bold uppercase tracking-wider text-[#86868B]">{stat.label}</span>
-               <span className={`text-[17px] font-bold ${stat.color}`}>{stat.value}</span>
+            <div key={i} className="bg-white dark:bg-zinc-900 px-3 lg:px-4 h-10 lg:h-11 rounded-xl flex items-center justify-between sm:justify-start gap-2 lg:gap-3 border border-[#E5E7EB] dark:border-zinc-800 shadow-sm transition-colors">
+               <span className="text-[10px] lg:text-[11px] font-bold uppercase tracking-wider text-[#4B5563] dark:text-zinc-500">{stat.label}</span>
+               <span className={`text-[15px] lg:text-[17px] font-extrabold ${stat.color}`}>{stat.value}</span>
             </div>
           ))}
         </div>
       </div>
 
       {/* Operational Controls - Unified Search/Filter */}
-      <div className="flex flex-col xl:flex-row gap-6 items-center border-b border-[#F2F2F2]">
-        <div className="flex items-center gap-8 self-start">
+      <div className="flex flex-col lg:flex-row gap-4 lg:gap-6 items-start lg:items-center border-b border-[#E5E7EB] dark:border-zinc-800 pb-2 lg:pb-0 transition-colors">
+        <div className="flex items-center gap-4 sm:gap-8 w-full sm:w-auto overflow-x-auto no-scrollbar">
           {['All', 'Available', 'Booked', 'Maintenance'].map((status) => (
             <button
               key={status}
               onClick={() => setFilterStatus(status)}
-              className={`h-12 px-1 text-[14px] font-semibold transition-all duration-300 whitespace-nowrap relative ${
+              className={`h-10 lg:h-12 px-1 text-[13px] lg:text-[14px] font-bold transition-all duration-300 whitespace-nowrap relative ${
                 filterStatus === status 
-                ? 'text-[#000000]' 
-                : 'text-[#86868B] hover:text-[#000000]'
+                ? 'text-[#000000] dark:text-white' 
+                : 'text-[#6B7280] dark:text-zinc-500 hover:text-[#000000] dark:hover:text-white'
               }`}
             >
               {status}
               {filterStatus === status && (
-                <div className="absolute bottom-0 left-0 right-0 h-[2px] bg-[#000000] rounded-t-full"></div>
+                <div className="absolute bottom-0 left-0 right-0 h-[2px] bg-[#000000] dark:bg-white rounded-t-full"></div>
               )}
             </button>
           ))}
         </div>
 
-        <div className="flex-1 relative w-full mb-3 xl:mb-0 xl:max-w-md ml-auto">
-          <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 text-[#D2D2D7]" size={16} />
+        <div className="flex-1 relative w-full lg:max-w-md lg:ml-auto">
+          <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 text-[#6B7280] dark:text-zinc-500" size={15} />
           <input 
             type="text" 
             placeholder="Search records..."
-            className="w-full h-10 bg-white border border-[#F2F2F2] rounded-lg pl-10 pr-4 text-[13px] font-medium text-[#1D1D1F] focus:ring-4 focus:ring-[#0066CC]/5 focus:border-[#0066CC] outline-none transition-all duration-300 placeholder-[#D2D2D7] shadow-sm"
+            className="w-full h-10 bg-white dark:bg-zinc-900 border border-[#D1D5DB] dark:border-zinc-700 rounded-lg pl-10 pr-4 text-[13px] font-semibold text-[#111827] dark:text-white focus:ring-4 focus:ring-[#000000]/5 dark:focus:ring-white/5 focus:border-[#000000] dark:focus:border-white outline-none transition-all duration-300 placeholder-[#6B7280] dark:placeholder-zinc-500 shadow-sm"
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
           />
@@ -297,23 +300,26 @@ const Dashboard = () => {
               stayDuration = Math.ceil((end - start) / (1000 * 60 * 60 * 24));
             }
 
-            // Professional Badge Styles
+            // Professional Black Background Badges
             const badgeStyles = {
-              Available: 'bg-[#DCFCE7] text-[#16A34A]',
-              Booked: 'bg-[#DBEAFE] text-[#2563EB]',
-              Maintenance: 'bg-[#FEF3C7] text-[#D97706]'
-            }[bed.status] || 'bg-slate-100 text-slate-600';
+              Available: 'bg-[#000000] text-[#10B981] h-7 px-3 rounded-full',
+              Booked: 'bg-[#000000] text-[#EF4444] h-7 px-3 rounded-full',
+              Maintenance: 'bg-[#000000] text-[#F59E0B] h-7 px-3 rounded-full'
+            }[bed.status] || 'bg-[#000000] text-white h-7 px-3 rounded-full';
 
             return (
               <div
                 key={bed.id}
                 onClick={() => handleBedClick(bed)}
-                className="w-full bg-white rounded-[12px] border border-[#E5E7EB] flex flex-col cursor-pointer transition-all duration-200 hover:-translate-y-[2px] hover:shadow-[0_8px_16px_rgba(0,0,0,0.08)] group overflow-hidden relative shadow-[0_1px_2px_rgba(0,0,0,0.06)]"
+                className="w-full bg-white dark:bg-zinc-900 rounded-[12px] border border-[#E5E7EB] dark:border-zinc-800 flex flex-col cursor-pointer transition-all duration-300 hover:-translate-y-[2px] hover:shadow-[0_8px_16px_rgba(0,0,0,0.08)] dark:hover:shadow-white/5 group overflow-hidden relative shadow-[0_1px_2px_rgba(0,0,0,0.06)]"
               >
-                {/* Status Badge Removed per user request */}
+                {/* Status Badge */}
+                <div className={`absolute top-3 right-3 z-10 text-[12px] font-semibold flex items-center justify-center tracking-tight transition-transform duration-200 group-hover:scale-105 ${badgeStyles}`}>
+                  {bed.status}
+                </div>
 
                 {/* 4) Image Section (160px) */}
-                <div className="h-[160px] relative overflow-hidden bg-[#F9FAFB]">
+                <div className="h-[160px] relative overflow-hidden bg-[#F9FAFB] dark:bg-zinc-800">
                   <img 
                     src={
                       bed.status === 'Available' ? bedMainImg :
@@ -331,31 +337,57 @@ const Dashboard = () => {
                 <div className="p-4 flex flex-col">
                   {/* 5) Room Name + Price Row */}
                   <div className="flex justify-between items-center gap-2">
-                    <h3 className="text-[16px] font-semibold text-[#111827] tracking-tight">Room {bed.id}</h3>
-                    <p className="text-[16px] font-semibold text-[#111827]">₹350</p>
+                    <h3 className="text-[16px] font-semibold text-[#111827] dark:text-white tracking-tight transition-colors">Room {bed.id}</h3>
+                    <p className="text-[16px] font-semibold text-[#111827] dark:text-white transition-colors">₹350</p>
                   </div>
                   
                   {/* Status/Duration Secondary Text (12px) */}
                   <div className="mt-3 min-h-[44px]">
                     {bed.status === 'Available' ? (
-                      <p className="text-[12px] font-medium text-[#6B7280]">Ready for check-in</p>
+                      <div className="space-y-3">
+                        <p className="text-[12px] font-medium text-[#6B7280] dark:text-zinc-500 transition-colors">Ready for check-in</p>
+                        <button 
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            handleBedClick(bed);
+                          }}
+                          className="w-full h-8 flex items-center justify-center gap-2 rounded-lg border border-[#000000] dark:border-white/20 bg-white dark:bg-zinc-800 text-[12px] font-bold text-[#000000] dark:text-white hover:bg-[#000000] dark:hover:bg-white hover:text-white dark:hover:text-[#000000] transition-all duration-200 active:scale-95 shadow-sm"
+                        >
+                          <Calendar size={14} />
+                          Book Now
+                        </button>
+                      </div>
+                    ) : bed.status === 'Maintenance' ? (
+                      <div className="space-y-3">
+                        <p className="text-[12px] font-medium text-[#6B7280] dark:text-zinc-500 transition-colors">Under maintenance</p>
+                        <button 
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            handleMaintenance(bed.id, bed.status);
+                          }}
+                          className="w-full h-8 flex items-center justify-center gap-2 rounded-lg border border-[#000000] dark:border-white/20 bg-white dark:bg-zinc-800 text-[12px] font-bold text-[#000000] dark:text-white hover:bg-[#000000] dark:hover:bg-white hover:text-white dark:hover:text-[#000000] transition-all duration-200 active:scale-95"
+                        >
+                          <CheckCircle2 size={14} />
+                          Set Available
+                        </button>
+                      </div>
                     ) : (
                       <div className="space-y-3">
-                        <div>
-                          <p className="text-[13px] font-bold text-[#111827] truncate">
+                        <div className="flex items-center justify-between gap-2">
+                          <p className="text-[13px] font-bold text-[#111827] dark:text-white truncate flex-1 transition-colors">
                             {bed.customer?.name || 'Occupied'}
                           </p>
-                          <p className="text-[11px] font-medium text-[#6B7280]">
-                            Stay: {stayDuration}d active
+                          <p className="text-[11px] font-bold text-[#6B7280] dark:text-zinc-500 whitespace-nowrap transition-colors">
+                            {stayDuration}d active
                           </p>
                         </div>
                         {bed.status === 'Booked' && (
                           <button 
                             onClick={(e) => {
                               e.stopPropagation();
-                              handleCheckout(bed); // Direct checkout & bill
+                              handleCheckout(bed);
                             }}
-                            className="w-full h-8 flex items-center justify-center gap-2 rounded-lg border border-[#E5E7EB] bg-white text-[12px] font-semibold text-[#111827] hover:bg-[#F9FAFB] hover:border-[#111827] transition-all active:scale-95"
+                            className="w-full h-8 flex items-center justify-center gap-2 rounded-lg border border-[#EF4444] bg-white dark:bg-zinc-800 text-[12px] font-bold text-[#EF4444] hover:bg-[#EF4444] hover:text-white transition-all duration-200 active:scale-95 shadow-sm"
                           >
                             <LogOut size={14} />
                             Check Out
@@ -363,17 +395,6 @@ const Dashboard = () => {
                         )}
                       </div>
                     )}
-                  </div>
-
-                  {/* 8) Subtle Divider */}
-                  <div className="h-[1px] bg-[#E5E7EB] my-3"></div>
-
-                  {/* 6) Footer Text */}
-                  <div className="flex items-center gap-2">
-                     <StatusIcon size={12} className="text-[#6B7280]" />
-                     <span className="text-[12px] font-medium text-[#6B7280] uppercase tracking-[0.04em]">
-                        Standard Unit
-                     </span>
                   </div>
                 </div>
               </div>
@@ -383,36 +404,36 @@ const Dashboard = () => {
       )}
 
       {/* System Information - Enterprise Style */}
-      <div className="mt-12 bg-white rounded-xl p-10 border border-[#E5E7EB] shadow-sm">
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-start">
-          <div className="space-y-8">
-            <div className="inline-flex items-center gap-2.5 px-4 py-2 bg-[#0F172A] text-white rounded-lg text-[12px] font-bold uppercase tracking-[0.1em]">
+      <div className="mt-12 bg-white dark:bg-zinc-900 rounded-xl p-6 lg:p-10 border border-[#E5E7EB] dark:border-zinc-800 shadow-sm transition-colors">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 lg:gap-16 items-start">
+          <div className="space-y-6 lg:space-y-8">
+            <div className="inline-flex items-center gap-2.5 px-4 py-2 bg-[#0F172A] dark:bg-zinc-800 text-white rounded-lg text-[12px] font-bold uppercase tracking-[0.1em]">
                <ShieldCheck size={16} className="text-[#14B8A6]" />
                <span>Operational Protocol</span>
             </div>
-            <h2 className="text-[28px] font-bold text-[#111827] tracking-tight">Management Framework</h2>
-            <p className="text-[16px] text-[#6B7280] leading-relaxed max-w-xl font-medium">
+            <h2 className="text-[24px] lg:text-[28px] font-bold text-[#111827] dark:text-white tracking-tight transition-colors">Management Framework</h2>
+            <p className="text-[14px] lg:text-[16px] text-[#6B7280] dark:text-zinc-400 leading-relaxed max-w-xl font-medium transition-colors">
               The 99 Capsule Enterprise PMS is a high-availability platform designed for high-volume hospitality desks. 
               Our interface adheres to strict operational standards to ensure zero-error room allocation and guest management.
             </p>
-            <div className="flex items-center gap-5 p-6 bg-[#F9FAFB] rounded-xl border border-[#E5E7EB] max-w-md group hover:border-[#0F172A] transition-all duration-300">
-              <div className="w-12 h-12 bg-[#0F172A] rounded-lg flex items-center justify-center text-white shrink-0 shadow-md transition-transform group-hover:scale-105">
+            <div className="flex items-center gap-5 p-6 bg-[#F9FAFB] dark:bg-zinc-800/50 rounded-xl border border-[#E5E7EB] dark:border-zinc-800 max-w-md group hover:border-[#0F172A] dark:hover:border-white transition-all duration-300">
+              <div className="w-12 h-12 bg-[#0F172A] dark:bg-zinc-800 rounded-lg flex items-center justify-center text-white shrink-0 shadow-md transition-transform group-hover:scale-105">
                 <MapPin size={24} className="text-[#14B8A6]" />
               </div>
               <div>
-                <p className="text-[11px] font-bold text-[#9CA3AF] uppercase tracking-widest">Corporate HQ</p>
-                <p className="text-[16px] font-bold text-[#111827] mt-1">Opposite ETree Bus Stand, Vijayawada</p>
+                <p className="text-[11px] font-bold text-[#9CA3AF] uppercase tracking-widest transition-colors">Corporate HQ</p>
+                <p className="text-[15px] lg:text-[16px] font-bold text-[#111827] dark:text-white mt-1 transition-colors">Opposite ETree Bus Stand, Vijayawada</p>
               </div>
             </div>
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 lg:gap-6">
             {features.map((feature, i) => (
-              <div key={i} className="flex items-center gap-5 p-5 bg-[#F9FAFB] rounded-xl border border-[#E5E7EB] hover:bg-white hover:border-[#0F172A] transition-all group duration-300">
-                <div className="w-12 h-12 bg-white rounded-lg border border-[#E5E7EB] flex items-center justify-center text-[#0F172A] transition-all group-hover:bg-[#0F172A] group-hover:text-white shadow-sm">
+              <div key={i} className="flex items-center gap-5 p-5 bg-[#F9FAFB] dark:bg-zinc-800/50 rounded-xl border border-[#E5E7EB] dark:border-zinc-800 hover:bg-white dark:hover:bg-zinc-800 hover:border-[#0F172A] dark:hover:border-white transition-all group duration-300">
+                <div className="w-12 h-12 bg-white dark:bg-zinc-800 rounded-lg border border-[#E5E7EB] dark:border-zinc-700 flex items-center justify-center text-[#0F172A] dark:text-white transition-all group-hover:bg-[#0F172A] dark:group-hover:bg-white group-hover:text-white dark:group-hover:text-black shadow-sm">
                   <feature.icon size={22} />
                 </div>
-                <span className="text-[15px] font-bold text-[#6B7280] group-hover:text-[#111827] transition-colors">{feature.label}</span>
+                <span className="text-[14px] lg:text-[15px] font-bold text-[#6B7280] dark:text-zinc-400 group-hover:text-[#111827] dark:group-hover:text-white transition-colors">{feature.label}</span>
               </div>
             ))}
           </div>
@@ -470,8 +491,8 @@ const Dashboard = () => {
                   Book Room
                 </button>
                 <button 
-                  onClick={() => handleMaintenance(actionBed.id)}
-                  className="w-full h-14 bg-white border border-[#E5E7EB] text-[#111827] rounded-xl font-bold text-[15px] flex items-center justify-center gap-3 hover:bg-[#F9FAFB] transition-all active:scale-95"
+                  onClick={() => handleMaintenance(actionBed.id, actionBed.status)}
+                  className="w-full h-14 bg-white border border-[#000000] text-[#111827] rounded-xl font-bold text-[15px] flex items-center justify-center gap-3 hover:bg-[#F9FAFB] transition-all active:scale-95"
                 >
                   <AlertCircle size={18} />
                   {actionBed?.status === 'Maintenance' ? 'Set as Available' : 'Put in Maintenance'}
