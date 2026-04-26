@@ -9,6 +9,8 @@ import BedBookingModal from '../components/BedBookingModal';
 import CheckoutConfirmationModal from '../components/CheckoutConfirmationModal';
 import ThermalReceipt from '../components/ThermalReceipt';
 import bedMainImg from '../assets/bed-main.png';
+import bookedImg from '../assets/booked.png';
+import maintenanceImg from '../assets/maintenance.png';
 
 const Dashboard = () => {
   const [beds, setBeds] = useState([]);
@@ -34,21 +36,6 @@ const Dashboard = () => {
   const fetchBeds = async () => {
     setLoading(true);
     try {
-      // 1. Try Local Dummy Data First
-      const localResp = await fetch('/dummyData.json');
-      if (localResp.ok) {
-        const fullData = await localResp.json();
-        // Map roomId to id for consistency with component expectations
-        const mappedBeds = (fullData.rooms || []).map(r => ({
-          ...r,
-          id: r.roomNumber // Using roomNumber as the primary ID for the UI
-        }));
-        setBeds(mappedBeds);
-        setLoading(false);
-        return;
-      }
-
-      // 2. Fallback to Production API
       const response = await fetch('https://99cap.vercel.app/_/backend/api/beds');
       const data = await response.json();
       setBeds(data);
@@ -303,17 +290,15 @@ const Dashboard = () => {
 
                 {/* 4) Image Section (160px) */}
                 <div className="h-[160px] relative overflow-hidden bg-[#F9FAFB]">
-                  {bed.status === 'Available' ? (
-                    <img 
-                      src={bedMainImg} 
-                      alt="Room" 
-                      className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105" 
-                    />
-                  ) : (
-                    <div className="w-full h-full flex items-center justify-center bg-[#F9FAFB]">
-                       <BedDouble size={40} className="text-[#E5E7EB]" />
-                    </div>
-                  )}
+                  <img 
+                    src={
+                      bed.status === 'Available' ? bedMainImg :
+                      bed.status === 'Maintenance' ? maintenanceImg :
+                      bookedImg
+                    } 
+                    alt={bed.status} 
+                    className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105" 
+                  />
                   {/* Subtle Image Overlay */}
                   <div className="absolute inset-0 bg-gradient-to-b from-transparent to-[rgba(0,0,0,0.04)] pointer-events-none"></div>
                 </div>

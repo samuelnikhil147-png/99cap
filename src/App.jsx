@@ -3,7 +3,6 @@ import { Routes, Route, Navigate } from 'react-router-dom';
 import Layout from './components/Layout';
 import Dashboard from './pages/Dashboard';
 import Rooms from './pages/Rooms';
-import Reservations from './pages/Reservations';
 import Customers from './pages/Customers';
 import Analytics from './pages/Analytics';
 import Settings from './pages/Settings';
@@ -37,7 +36,6 @@ function App() {
       <Routes>
         <Route path="/" element={<Dashboard user={user} />} />
         <Route path="/rooms" element={<Rooms />} />
-        <Route path="/reservations" element={<Reservations />} />
         <Route path="/checkout-list" element={<CheckoutList />} />
         <Route path="/customers" element={<Customers />} />
         
