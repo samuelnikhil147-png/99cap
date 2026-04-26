@@ -196,6 +196,26 @@ app.post('/api/extend', async (req, res) => {
   }
 });
 
+// POST toggle maintenance
+app.post('/api/maintenance', async (req, res) => {
+  const { bedId, status } = req.body;
+  if (!bedId || !status) return res.status(400).json({ error: 'Missing details' });
+
+  try {
+    const bed = await Bed.findOne({ id: parseInt(bedId) });
+    if (!bed) return res.status(404).json({ error: 'Bed not found' });
+
+    bed.status = status;
+    if (status === 'Maintenance' || status === 'Available') {
+      bed.customer = null;
+    }
+    await bed.save();
+    res.json({ message: `Bed #${bedId} status updated to ${status}`, bed });
+  } catch (error) {
+    res.status(500).json({ error: 'Maintenance update failed' });
+  }
+});
+
 // POST checkout
 app.post('/api/checkout', async (req, res) => {
   const { bedId, receiptData } = req.body;
@@ -263,11 +283,13 @@ app.get('/api/stats', async (req, res) => {
     const total = await Bed.countDocuments();
     const active = await Bed.countDocuments({ status: { $in: ['Booked', 'Checkout Due Today', 'Overstayed'] } });
     const available = await Bed.countDocuments({ status: 'Available' });
+    const maintenance = await Bed.countDocuments({ status: 'Maintenance' });
     
     res.json({
       total,
       active,
       available,
+      maintenance,
       occupancyRate: total > 0 ? ((active / total) * 100).toFixed(1) : 0
     });
   } catch (error) {

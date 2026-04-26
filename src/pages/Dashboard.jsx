@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { 
   Search, Filter, Info, CreditCard, User, BedDouble, Calendar, 
   CheckCircle2, Clock, AlertCircle, ShieldAlert, MapPin, 
-  Zap, ShieldCheck, Wallet, Timer, Activity, Users, LogOut 
+  Zap, ShieldCheck, Wallet, Timer, Activity, Users, LogOut, Hotel
 } from 'lucide-react';
 import { notify } from '../components/Toast';
 import BedBookingModal from '../components/BedBookingModal';
@@ -15,7 +15,9 @@ import maintenanceImg from '../assets/maintenance.png';
 const Dashboard = () => {
   const [beds, setBeds] = useState([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isActionModalOpen, setIsActionModalOpen] = useState(false);
   const [selectedBed, setSelectedBed] = useState(null);
+  const [actionBed, setActionBed] = useState(null);
   const [searchTerm, setSearchTerm] = useState('');
   const [filterStatus, setFilterStatus] = useState('All');
   const [loading, setLoading] = useState(true);
@@ -134,13 +136,37 @@ const Dashboard = () => {
 
   const handleBedClick = (bed) => {
     if (bed.status === 'Available') {
-      setSelectedBed(bed.id);
-      setIsModalOpen(true);
+      setActionBed(bed);
+      setIsActionModalOpen(true);
     } else if (['Booked', 'Checkout Due Today', 'Overstayed'].includes(bed.status)) {
       // Logic for extension/checkout handled via card buttons
     } else if (bed.status === 'Maintenance') {
-      notify(`Bed #${bed.id} is under maintenance.`, 'warning');
+      setActionBed(bed);
+      setIsActionModalOpen(true); // Allow bringing it back from maintenance
     }
+  };
+
+  const handleMaintenance = async (bedId) => {
+    try {
+      const response = await fetch('https://99cap.vercel.app/_/backend/api/maintenance', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ bedId, status: actionBed.status === 'Maintenance' ? 'Available' : 'Maintenance' })
+      });
+      if (response.ok) {
+        notify(`Bed #${bedId} status updated`, 'success');
+        setIsActionModalOpen(false);
+        fetchBeds();
+      }
+    } catch (error) {
+      notify('Operation failed', 'error');
+    }
+  };
+
+  const handleStartBooking = () => {
+    setSelectedBed(actionBed.id);
+    setIsActionModalOpen(false);
+    setIsModalOpen(true);
   };
 
   const handleBookingConfirm = async (bedId, customerDetails) => {
@@ -209,7 +235,8 @@ const Dashboard = () => {
           {[
             { label: 'Inventory', value: stats.total, color: 'text-[#000000]' },
             { label: 'Available', value: stats.available, color: 'text-[#10B981]' },
-            { label: 'Booked', value: stats.active, color: 'text-[#0066CC]' }
+            { label: 'Booked', value: stats.active, color: 'text-[#0066CC]' },
+            { label: 'Maintenance', value: stats.maintenance, color: 'text-[#D97706]' }
           ].map((stat, i) => (
             <div key={i} className="bg-white px-4 h-11 rounded-xl flex items-center gap-3 border border-[#F2F2F2] shadow-sm">
                <span className="text-[11px] font-bold uppercase tracking-wider text-[#86868B]">{stat.label}</span>
@@ -283,10 +310,7 @@ const Dashboard = () => {
                 onClick={() => handleBedClick(bed)}
                 className="w-full bg-white rounded-[12px] border border-[#E5E7EB] flex flex-col cursor-pointer transition-all duration-200 hover:-translate-y-[2px] hover:shadow-[0_8px_16px_rgba(0,0,0,0.08)] group overflow-hidden relative shadow-[0_1px_2px_rgba(0,0,0,0.06)]"
               >
-                {/* 3) Sharp Status Badge */}
-                <div className={`absolute top-3 right-3 z-10 h-7 px-2.5 rounded-full text-[12px] font-semibold flex items-center justify-center tracking-tight transition-transform duration-200 group-hover:scale-105 ${badgeStyles}`}>
-                  {bed.status}
-                </div>
+                {/* Status Badge Removed per user request */}
 
                 {/* 4) Image Section (160px) */}
                 <div className="h-[160px] relative overflow-hidden bg-[#F9FAFB]">
@@ -425,6 +449,44 @@ const Dashboard = () => {
         data={receiptData} 
         onConfirm={confirmCheckout} 
       />
+      {/* Bed Action Selection Modal */}
+      {isActionModalOpen && (
+        <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
+          <div className="absolute inset-0 bg-[#000000]/40 backdrop-blur-sm" onClick={() => setIsActionModalOpen(false)}></div>
+          <div className="relative bg-white w-full max-w-sm rounded-[24px] shadow-2xl overflow-hidden animate-in fade-in zoom-in duration-200">
+            <div className="p-8 text-center">
+              <div className="w-16 h-16 bg-[#F9FAFB] rounded-2xl flex items-center justify-center mx-auto mb-6">
+                <Hotel size={32} className="text-[#1D1D1F]" />
+              </div>
+              <h3 className="text-[20px] font-bold text-[#111827] tracking-tight">Room {actionBed?.id}</h3>
+              <p className="text-[14px] font-medium text-[#6B7280] mt-1">Select an action for this unit</p>
+              
+              <div className="mt-8 space-y-3">
+                <button 
+                  onClick={handleStartBooking}
+                  className="w-full h-14 bg-[#000000] text-white rounded-xl font-bold text-[15px] flex items-center justify-center gap-3 hover:bg-[#1D1D1F] transition-all active:scale-95 shadow-lg shadow-black/10"
+                >
+                  <Calendar size={18} />
+                  Book Room
+                </button>
+                <button 
+                  onClick={() => handleMaintenance(actionBed.id)}
+                  className="w-full h-14 bg-white border border-[#E5E7EB] text-[#111827] rounded-xl font-bold text-[15px] flex items-center justify-center gap-3 hover:bg-[#F9FAFB] transition-all active:scale-95"
+                >
+                  <AlertCircle size={18} />
+                  {actionBed?.status === 'Maintenance' ? 'Set as Available' : 'Put in Maintenance'}
+                </button>
+                <button 
+                  onClick={() => setIsActionModalOpen(false)}
+                  className="w-full h-12 text-[14px] font-bold text-[#6B7280] hover:text-[#111827] transition-colors"
+                >
+                  Cancel
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
