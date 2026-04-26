@@ -3,61 +3,64 @@ import { notify } from './Toast';
 
 const Header = ({ setSidebarOpen }) => {
   return (
-    <header className="h-20 bg-white dark:bg-slate-900 border-b border-slate-200 dark:border-slate-800 px-4 md:px-8 flex items-center justify-between transition-colors duration-300">
-      <div className="flex items-center gap-4 flex-1">
+    <header className="h-16 bg-[#0F172A] border-b border-[#1F2937] px-6 grid grid-cols-[auto_1fr_auto] items-center shrink-0 transition-all duration-200">
+      {/* Left Section - Logo Anchor */}
+      <div className="flex items-center">
         <button 
           onClick={() => setSidebarOpen(true)}
-          className="p-2 text-slate-500 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg md:hidden"
+          className="p-2 text-white/70 hover:bg-white/10 rounded-lg md:hidden transition-all duration-200"
         >
-          <Menu size={24} />
+          <Menu size={20} />
         </button>
-        
-        <div className="flex-1 max-w-xl relative hidden sm:block">
-          <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 dark:text-slate-500" size={18} />
+      </div>
+
+      {/* Center: Search (Visually Centered) */}
+      <div className="flex justify-center items-center">
+        <div className="w-[420px] max-w-full relative group">
+          <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 text-[#9CA3AF] group-focus-within:text-[#14B8A6] transition-colors duration-200" size={16} />
           <input 
             type="text" 
-            placeholder="Search rooms..." 
-            onKeyDown={(e) => e.key === 'Enter' && notify('Searching system wide...', 'info')}
-            className="w-full pl-12 pr-4 py-3 bg-slate-50 dark:bg-slate-800/50 border-none rounded-2xl text-sm dark:text-white placeholder:text-slate-400 dark:placeholder:text-slate-500 focus:ring-2 focus:ring-indigo-500/20 transition-all outline-none"
+            placeholder="Search bookings, rooms, or guests..." 
+            onKeyDown={(e) => e.key === 'Enter' && notify('Searching secure records...', 'info')}
+            className="w-full h-10 pl-10 pr-4 bg-white border border-[#E5E7EB] rounded-[10px] text-[14px] text-[#111827] placeholder-[#9CA3AF] focus:ring-4 focus:ring-[#14B8A6]/10 focus:border-[#14B8A6] transition-all duration-200 outline-none shadow-sm"
           />
         </div>
       </div>
 
-      <div className="flex items-center gap-6">
-        <div className="flex items-center gap-2">
+      {/* Right Section */}
+      <div className="flex items-center gap-4">
+        <div className="flex items-center gap-1">
           <button 
             onClick={() => notify('Checking live notifications...', 'info')}
-            className="p-2.5 text-slate-500 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800 rounded-xl transition-colors relative"
+            className="p-2 text-white/70 hover:bg-white/10 rounded-lg transition-all duration-200 relative"
           >
             <Bell size={20} />
-            <span className="absolute top-2.5 right-2.5 w-2 h-2 bg-red-500 border-2 border-white dark:border-slate-900 rounded-full"></span>
+            <span className="absolute top-2 right-2 w-2 h-2 bg-[#EF4444] border-2 border-[#0F172A] rounded-full"></span>
           </button>
           <button 
-            onClick={() => notify('Opening system inbox...', 'info')}
-            className="p-2.5 text-slate-500 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800 rounded-xl transition-colors"
+            onClick={() => notify('Opening staff communications...', 'info')}
+            className="p-2 text-white/70 hover:bg-white/10 rounded-lg transition-all duration-200"
           >
             <Mail size={20} />
           </button>
         </div>
 
-        <div className="h-10 w-[1px] bg-slate-200 dark:bg-slate-800"></div>
-
         <div 
           onClick={() => notify('Profile management coming soon!', 'info')}
           className="flex items-center gap-3 cursor-pointer group"
         >
-          <div className="text-right">
-            <p className="text-sm font-semibold text-slate-900 dark:text-white group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors">Administrator</p>
-            <p className="text-xs text-slate-500 dark:text-slate-400">System Admin</p>
+          <div className="text-right hidden sm:block">
+            <p className="text-[14px] font-semibold text-white group-hover:text-[#14B8A6] transition-colors leading-none">Pardhin</p>
+            <p className="text-[11px] text-white/50 font-medium mt-1 uppercase tracking-wider">System Admin</p>
           </div>
-          <div className="w-10 h-10 rounded-xl overflow-hidden border-2 border-indigo-100 dark:border-slate-800 group-hover:border-indigo-500 dark:group-hover:border-indigo-400 transition-all">
+          <div className="w-9 h-9 rounded-full overflow-hidden border border-[#1F2937] group-hover:border-[#14B8A6] transition-all shadow-md">
             <img 
-              src="https://api.dicebear.com/7.x/avataaars/svg?seed=Admin" 
+              src="https://api.dicebear.com/7.x/avataaars/svg?seed=Pardhin" 
               alt="Profile" 
               className="w-full h-full object-cover"
             />
           </div>
-          <ChevronDown className="text-slate-400 group-hover:text-slate-900 dark:group-hover:text-white transition-colors" size={16} />
+          <ChevronDown className="text-white/40 group-hover:text-white transition-colors" size={14} />
         </div>
       </div>
     </header>

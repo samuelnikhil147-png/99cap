@@ -1,27 +1,79 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
 @import "tailwindcss";
 
 @theme {
-  --font-family-sans: 'Inter', system-ui, -apple-system, sans-serif;
+  --font-family-sans: "SF Pro Text", "SF Pro Display", -apple-system, BlinkMacSystemFont, "Inter", system-ui, sans-serif;
+  --font-family-mono: "SF Mono", "SFMono-Regular", ui-monospace, "Cascadia Code", "Source Code Pro", Menlo, Consolas, monospace;
+  
+  --color-primary-dark: #000000;
+  --color-accent-teal: #14B8A6;
+  --color-bg-main: #FBFBFB;
+  --color-card-white: #FFFFFF;
+  --color-border-light: #F2F2F2;
+  --color-border-nav: #111111;
+  
+  --color-text-main: #1D1D1F;
+  --color-text-secondary: #86868B;
+  
+  --color-badge-avail-bg: #E8F5E9;
+  --color-badge-avail-text: #2E7D32;
+  --color-badge-booked-bg: #E3F2FD;
+  --color-badge-booked-text: #1565C0;
+  --color-badge-maint-bg: #FFF8E1;
+  --color-badge-maint-text: #F57F17;
+  
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.04);
+  --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.05);
 }
 
 @variant dark (&:where(.dark, .dark *));
 
 :root {
-  --font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  --font-family: "SF Pro Text", "SF Pro Display", -apple-system, BlinkMacSystemFont, "Inter", system-ui, sans-serif;
+  --font-mono: "SF Mono", "SFMono-Regular", ui-monospace, Menlo, monospace;
+  --bg-main: #FBFBFB;
 }
 
 body {
   font-family: var(--font-family);
-  @apply bg-slate-50 text-slate-900 overflow-x-hidden;
+  background-color: var(--bg-main);
+  letter-spacing: -0.015em;
+  @apply text-[#1D1D1F] overflow-x-hidden antialiased;
 }
 
-/* Custom utility for glassmorphism */
-.glass {
-  @apply bg-white/70 backdrop-blur-md border border-white/20;
+code, pre, kbd, samp {
+  font-family: var(--font-mono);
 }
 
-.card-shadow {
-  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05), 0 8px 10px -6px rgba(0, 0, 0, 0.05);
+/* Premium Enterprise Scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: #FBFBFB;
+}
+::-webkit-scrollbar-thumb {
+  background: #D2D2D7;
+  border-radius: 10px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #A1A1A6;
+}
+
+/* Tight Operational Spacing */
+.gap-pro { gap: 16px; }
+.p-pro { padding: 12px; }
+
+/* Micro-Interactions */
+.transition-standard {
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Card Hover Professional */
+.card-hover-pro {
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  @apply hover:-translate-y-1 hover:shadow-[0_12px_24px_rgba(0,0,0,0.08)];
 }
 
 @media print {

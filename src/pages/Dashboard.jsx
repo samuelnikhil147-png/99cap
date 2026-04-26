@@ -2,12 +2,13 @@ import React, { useState, useEffect } from 'react';
 import { 
   Search, Filter, Info, CreditCard, User, BedDouble, Calendar, 
   CheckCircle2, Clock, AlertCircle, ShieldAlert, MapPin, 
-  Zap, ShieldCheck, Wallet, Timer, Activity, Users 
+  Zap, ShieldCheck, Wallet, Timer, Activity, Users, LogOut 
 } from 'lucide-react';
 import { notify } from '../components/Toast';
 import BedBookingModal from '../components/BedBookingModal';
 import CheckoutConfirmationModal from '../components/CheckoutConfirmationModal';
 import ThermalReceipt from '../components/ThermalReceipt';
+import bedMainImg from '../assets/bed-main.png';
 
 const Dashboard = () => {
   const [beds, setBeds] = useState([]);
@@ -31,7 +32,23 @@ const Dashboard = () => {
   };
 
   const fetchBeds = async () => {
+    setLoading(true);
     try {
+      // 1. Try Local Dummy Data First
+      const localResp = await fetch('/dummyData.json');
+      if (localResp.ok) {
+        const fullData = await localResp.json();
+        // Map roomId to id for consistency with component expectations
+        const mappedBeds = (fullData.rooms || []).map(r => ({
+          ...r,
+          id: r.roomNumber // Using roomNumber as the primary ID for the UI
+        }));
+        setBeds(mappedBeds);
+        setLoading(false);
+        return;
+      }
+
+      // 2. Fallback to Production API
       const response = await fetch('https://99cap.vercel.app/_/backend/api/beds');
       const data = await response.json();
       setBeds(data);
@@ -174,10 +191,10 @@ const Dashboard = () => {
 
   const statusConfig = {
     Available: { color: 'emerald', icon: CheckCircle2, bg: 'bg-emerald-50 dark:bg-emerald-900/20', text: 'text-emerald-600 dark:text-emerald-400', border: 'border-emerald-100 dark:border-emerald-800', dot: 'bg-emerald-500' },
-    Booked: { color: 'indigo', icon: User, bg: 'bg-indigo-50 dark:bg-indigo-900/20', text: 'text-indigo-600 dark:text-indigo-400', border: 'border-indigo-100 dark:border-indigo-800', dot: 'bg-indigo-500' },
+    Booked: { color: 'navy', icon: User, bg: 'bg-navy-900/10', text: 'text-navy-900', border: 'border-navy-900/20', dot: 'bg-navy-900' },
     'Checkout Due Today': { color: 'amber', icon: AlertCircle, bg: 'bg-amber-50 dark:bg-amber-900/20', text: 'text-amber-600 dark:text-amber-400', border: 'border-amber-100 dark:border-amber-800', dot: 'bg-amber-500' },
     Overstayed: { color: 'rose', icon: ShieldAlert, bg: 'bg-rose-50 dark:bg-rose-900/20', text: 'text-rose-600 dark:text-rose-400', border: 'border-rose-100 dark:border-rose-800', dot: 'bg-rose-500' },
-    Maintenance: { color: 'slate', icon: Clock, bg: 'bg-slate-50 dark:bg-slate-800/50', text: 'text-slate-600 dark:text-slate-400', border: 'border-slate-100 dark:border-slate-700', dot: 'bg-slate-500' }
+    Maintenance: { color: 'grey', icon: Clock, bg: 'bg-grey-100 dark:bg-slate-800/50', text: 'text-grey-400 dark:text-slate-400', border: 'border-grey-200 dark:border-slate-700', dot: 'bg-grey-400' }
   };
 
   const todayCheckouts = beds.filter(b => ['Checkout Due Today', 'Overstayed'].includes(b.status));
@@ -193,71 +210,72 @@ const Dashboard = () => {
   ];
 
   return (
-    <div className="space-y-6 pb-10 animate-in fade-in duration-500">
-      {/* Header & Stats - Compact */}
-      <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
+    <div className="space-y-6 pb-10 animate-in fade-in duration-1000">
+      {/* Page Header */}
+      <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-6">
         <div>
-          <h1 className="text-3xl font-black text-slate-900 dark:text-white tracking-tight">Reception Desk</h1>
-          <p className="text-slate-500 dark:text-slate-400 font-medium text-sm">Internal Reservation & Availability System</p>
+          <h1 className="text-[26px] font-bold text-[#1D1D1F] tracking-tight leading-none">Reception Desk</h1>
+          <p className="text-[#86868B] font-medium text-[13px] mt-1.5">Enterprise Management Suite</p>
         </div>
 
         <div className="flex gap-2">
           {[
-            { label: 'ALL', value: stats.total, bg: 'bg-slate-100 dark:bg-slate-800', text: 'text-slate-600 dark:text-slate-300' },
-            { label: 'AVAIL', value: stats.available, bg: 'bg-emerald-100 dark:bg-emerald-900/30', text: 'text-emerald-700 dark:text-emerald-400' },
-            { label: 'BOOKED', value: stats.booked, bg: 'bg-rose-100 dark:bg-rose-900/30', text: 'text-rose-700 dark:text-rose-400' },
-            { label: 'MAINT', value: stats.maintenance, bg: 'bg-amber-100 dark:bg-amber-900/30', text: 'text-amber-700 dark:text-amber-400' }
+            { label: 'Inventory', value: stats.total, color: 'text-[#000000]' },
+            { label: 'Available', value: stats.available, color: 'text-[#10B981]' },
+            { label: 'Booked', value: stats.active, color: 'text-[#0066CC]' }
           ].map((stat, i) => (
-            <div key={i} className={`${stat.bg} ${stat.text} px-4 py-2 rounded-xl flex items-center gap-3 border border-white/50 dark:border-slate-700/50 shadow-sm transition-colors duration-300`}>
-               <span className="text-[10px] font-black uppercase tracking-wider">{stat.label}</span>
-               <span className="text-lg font-black leading-none">{stat.value}</span>
+            <div key={i} className="bg-white px-4 h-11 rounded-xl flex items-center gap-3 border border-[#F2F2F2] shadow-sm">
+               <span className="text-[11px] font-bold uppercase tracking-wider text-[#86868B]">{stat.label}</span>
+               <span className={`text-[17px] font-bold ${stat.color}`}>{stat.value}</span>
             </div>
           ))}
         </div>
       </div>
 
-      {/* Control Bar - Compact */}
-      <div className="flex flex-col xl:flex-row gap-4 items-center">
-        <div className="flex-1 relative w-full">
-          <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 dark:text-slate-500" size={16} />
+      {/* Operational Controls - Unified Search/Filter */}
+      <div className="flex flex-col xl:flex-row gap-6 items-center border-b border-[#F2F2F2]">
+        <div className="flex items-center gap-8 self-start">
+          {['All', 'Available', 'Booked', 'Maintenance'].map((status) => (
+            <button
+              key={status}
+              onClick={() => setFilterStatus(status)}
+              className={`h-12 px-1 text-[14px] font-semibold transition-all duration-300 whitespace-nowrap relative ${
+                filterStatus === status 
+                ? 'text-[#000000]' 
+                : 'text-[#86868B] hover:text-[#000000]'
+              }`}
+            >
+              {status}
+              {filterStatus === status && (
+                <div className="absolute bottom-0 left-0 right-0 h-[2px] bg-[#000000] rounded-t-full"></div>
+              )}
+            </button>
+          ))}
+        </div>
+
+        <div className="flex-1 relative w-full mb-3 xl:mb-0 xl:max-w-md ml-auto">
+          <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 text-[#D2D2D7]" size={16} />
           <input 
             type="text" 
-            placeholder="Quick search (Number/Guest)..."
-            className="w-full bg-white dark:bg-slate-800/50 border border-slate-200 dark:border-slate-800 rounded-xl py-3 pl-11 pr-4 text-sm font-bold text-slate-900 dark:text-white shadow-sm focus:ring-2 focus:ring-indigo-500/10 focus:border-indigo-400 outline-none transition-all placeholder:text-slate-400 dark:placeholder:text-slate-500"
+            placeholder="Search records..."
+            className="w-full h-10 bg-white border border-[#F2F2F2] rounded-lg pl-10 pr-4 text-[13px] font-medium text-[#1D1D1F] focus:ring-4 focus:ring-[#0066CC]/5 focus:border-[#0066CC] outline-none transition-all duration-300 placeholder-[#D2D2D7] shadow-sm"
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
           />
         </div>
-
-        <div className="flex items-center gap-1 p-1 bg-slate-100 dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700 w-full xl:w-auto overflow-x-auto no-scrollbar transition-colors duration-300">
-          {['All', 'Available', 'Booked', 'Reserved', 'Maintenance'].map((status) => (
-            <button
-              key={status}
-              onClick={() => setFilterStatus(status)}
-              className={`px-4 py-2 rounded-lg text-[10px] font-black transition-all whitespace-nowrap ${
-                filterStatus === status 
-                ? 'bg-white dark:bg-slate-700 text-indigo-600 dark:text-indigo-400 shadow-sm border border-slate-200 dark:border-slate-600' 
-                : 'text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
-              }`}
-            >
-              {status.toUpperCase()}
-            </button>
-          ))}
-        </div>
       </div>
 
-      {/* Grid - High Density */}
+      {/* Main Grid - 5 Cards Layout with Tight Gaps */}
       {loading ? (
         <div className="flex items-center justify-center py-20">
-           <div className="animate-spin rounded-full h-8 w-8 border-2 border-indigo-600 border-t-transparent"></div>
+           <div className="animate-spin rounded-full h-8 w-8 border-2 border-[#000000] border-t-transparent"></div>
         </div>
       ) : (
-        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 xl:grid-cols-7 2xl:grid-cols-8 gap-3">
+        <div className="grid grid-cols-[repeat(auto-fill,minmax(200px,1fr))] gap-4">
           {filteredBeds.map((bed) => {
             const config = statusConfig[bed.status] || statusConfig.Available;
             const StatusIcon = config.icon;
             
-            // Calculate stay duration for booked beds
             let stayDuration = 0;
             if (bed.customer?.checkIn && bed.customer?.checkOut) {
               const start = new Date(bed.customer.checkIn);
@@ -265,107 +283,127 @@ const Dashboard = () => {
               stayDuration = Math.ceil((end - start) / (1000 * 60 * 60 * 24));
             }
 
+            // Professional Badge Styles
+            const badgeStyles = {
+              Available: 'bg-[#DCFCE7] text-[#16A34A]',
+              Booked: 'bg-[#DBEAFE] text-[#2563EB]',
+              Maintenance: 'bg-[#FEF3C7] text-[#D97706]'
+            }[bed.status] || 'bg-slate-100 text-slate-600';
+
             return (
               <div
                 key={bed.id}
                 onClick={() => handleBedClick(bed)}
-                className={`
-                  relative group cursor-pointer bg-white dark:bg-slate-900 p-4 rounded-[2rem] border-2 transition-all duration-300
-                  ${config.border} hover:shadow-xl hover:-translate-y-1
-                  ${bed.status === 'Available' ? 'hover:border-emerald-300 dark:hover:border-emerald-700' : ''}
-                `}
+                className="w-full bg-white rounded-[12px] border border-[#E5E7EB] flex flex-col cursor-pointer transition-all duration-200 hover:-translate-y-[2px] hover:shadow-[0_8px_16px_rgba(0,0,0,0.08)] group overflow-hidden relative shadow-[0_1px_2px_rgba(0,0,0,0.06)]"
               >
-                <div className={`absolute top-3 right-3 px-2 py-1 rounded-lg ${config.bg} ${config.text} border ${config.border} transition-colors`}>
-                  <StatusIcon size={12} />
+                {/* 3) Sharp Status Badge */}
+                <div className={`absolute top-3 right-3 z-10 h-7 px-2.5 rounded-full text-[12px] font-semibold flex items-center justify-center tracking-tight transition-transform duration-200 group-hover:scale-105 ${badgeStyles}`}>
+                  {bed.status}
                 </div>
 
-                <div className="mb-4">
-                  <h3 className="text-3xl font-black text-slate-900 dark:text-white leading-none">#{bed.id}</h3>
-                  <p className="text-[9px] font-black text-slate-400 dark:text-slate-500 uppercase tracking-tighter mt-1">Bed Number</p>
-                </div>
-
-                <div className="space-y-3 mb-4 min-h-[60px]">
+                {/* 4) Image Section (160px) */}
+                <div className="h-[160px] relative overflow-hidden bg-[#F9FAFB]">
                   {bed.status === 'Available' ? (
-                    <div>
-                      <p className="text-[10px] font-black text-slate-900 dark:text-white uppercase">Premium Unit</p>
-                      <p className="text-[8px] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-widest">Single Occupancy</p>
-                    </div>
+                    <img 
+                      src={bedMainImg} 
+                      alt="Room" 
+                      className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105" 
+                    />
                   ) : (
-                    <div>
-                      <p className="text-[10px] font-black text-slate-900 dark:text-white truncate">{bed.customer?.name}</p>
-                      <div className="flex items-center gap-1 mt-1">
-                        <Clock size={8} className="text-slate-400" />
-                        <p className="text-[8px] font-bold text-slate-500 dark:text-slate-400 uppercase">{stayDuration} Days Stay</p>
-                      </div>
+                    <div className="w-full h-full flex items-center justify-center bg-[#F9FAFB]">
+                       <BedDouble size={40} className="text-[#E5E7EB]" />
                     </div>
                   )}
+                  {/* Subtle Image Overlay */}
+                  <div className="absolute inset-0 bg-gradient-to-b from-transparent to-[rgba(0,0,0,0.04)] pointer-events-none"></div>
                 </div>
 
-                {['Booked', 'Checkout Due Today', 'Overstayed'].includes(bed.status) && (
-                  <div className="flex gap-1 mt-2">
-                    <button 
-                      onClick={(e) => { e.stopPropagation(); handleExtendStay(bed.id); }}
-                      className="flex-1 py-1.5 bg-indigo-50 dark:bg-indigo-900/30 text-indigo-600 dark:text-indigo-400 rounded-lg text-[8px] font-black uppercase hover:bg-indigo-100 transition-colors"
-                    >
-                      Extend
-                    </button>
-                    <button 
-                      onClick={(e) => { e.stopPropagation(); handleCheckout(bed); }}
-                      className="flex-1 py-1.5 bg-rose-50 dark:bg-rose-900/30 text-rose-600 dark:text-rose-400 rounded-lg text-[8px] font-black uppercase hover:bg-rose-100 transition-colors"
-                    >
-                      Out
-                    </button>
+                {/* 1) Card Content (16px Padding) */}
+                <div className="p-4 flex flex-col">
+                  {/* 5) Room Name + Price Row */}
+                  <div className="flex justify-between items-center gap-2">
+                    <h3 className="text-[16px] font-semibold text-[#111827] tracking-tight">Room {bed.id}</h3>
+                    <p className="text-[16px] font-semibold text-[#111827]">₹350</p>
                   </div>
-                )}
+                  
+                  {/* Status/Duration Secondary Text (12px) */}
+                  <div className="mt-3 min-h-[44px]">
+                    {bed.status === 'Available' ? (
+                      <p className="text-[12px] font-medium text-[#6B7280]">Ready for check-in</p>
+                    ) : (
+                      <div className="space-y-3">
+                        <div>
+                          <p className="text-[13px] font-bold text-[#111827] truncate">
+                            {bed.customer?.name || 'Occupied'}
+                          </p>
+                          <p className="text-[11px] font-medium text-[#6B7280]">
+                            Stay: {stayDuration}d active
+                          </p>
+                        </div>
+                        {bed.status === 'Booked' && (
+                          <button 
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              handleCheckout(bed); // Direct checkout & bill
+                            }}
+                            className="w-full h-8 flex items-center justify-center gap-2 rounded-lg border border-[#E5E7EB] bg-white text-[12px] font-semibold text-[#111827] hover:bg-[#F9FAFB] hover:border-[#111827] transition-all active:scale-95"
+                          >
+                            <LogOut size={14} />
+                            Check Out
+                          </button>
+                        )}
+                      </div>
+                    )}
+                  </div>
 
-                {bed.status === 'Available' && (
-                  <div className="flex items-center justify-between pt-2 border-t border-slate-50 dark:border-slate-800">
-                    <div>
-                      <span className="text-[7px] font-bold text-slate-400 dark:text-slate-500 block leading-none uppercase">Rate</span>
-                      <p className="text-[10px] font-black text-slate-900 dark:text-white leading-none mt-0.5">₹350</p>
-                    </div>
-                    <div className="w-6 h-6 bg-emerald-500 rounded-lg flex items-center justify-center text-white shadow-lg shadow-emerald-500/20">
-                      <CreditCard size={12} />
-                    </div>
+                  {/* 8) Subtle Divider */}
+                  <div className="h-[1px] bg-[#E5E7EB] my-3"></div>
+
+                  {/* 6) Footer Text */}
+                  <div className="flex items-center gap-2">
+                     <StatusIcon size={12} className="text-[#6B7280]" />
+                     <span className="text-[12px] font-medium text-[#6B7280] uppercase tracking-[0.04em]">
+                        Standard Unit
+                     </span>
                   </div>
-                )}
+                </div>
               </div>
             );
           })}
         </div>
       )}
 
-      {/* About Section */}
-      <div className="mt-12 bg-indigo-50 dark:bg-slate-900/50 rounded-[2.5rem] border border-indigo-100 dark:border-slate-800 p-8 xl:p-12 transition-colors duration-300">
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-start">
-          <div className="space-y-6">
-            <div className="inline-flex items-center gap-2 px-4 py-2 bg-indigo-600 text-white rounded-2xl text-xs font-black uppercase tracking-widest shadow-lg shadow-indigo-600/20">
-              <Info size={14} />
-              <span>System Information</span>
+      {/* System Information - Enterprise Style */}
+      <div className="mt-12 bg-white rounded-xl p-10 border border-[#E5E7EB] shadow-sm">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-start">
+          <div className="space-y-8">
+            <div className="inline-flex items-center gap-2.5 px-4 py-2 bg-[#0F172A] text-white rounded-lg text-[12px] font-bold uppercase tracking-[0.1em]">
+               <ShieldCheck size={16} className="text-[#14B8A6]" />
+               <span>Operational Protocol</span>
             </div>
-            <h2 className="text-4xl font-black text-slate-900 dark:text-white tracking-tight">What is 99 Capsule?</h2>
-            <p className="text-lg text-slate-600 dark:text-slate-400 leading-relaxed max-w-xl font-medium">
-              99 Capsule is a capsule-style stay and dormitory accommodation designed for short-term stays. 
-              It is ideal for travelers, commuters, and individuals looking for affordable and convenient lodging near transport hubs.
+            <h2 className="text-[28px] font-bold text-[#111827] tracking-tight">Management Framework</h2>
+            <p className="text-[16px] text-[#6B7280] leading-relaxed max-w-xl font-medium">
+              The 99 Capsule Enterprise PMS is a high-availability platform designed for high-volume hospitality desks. 
+              Our interface adheres to strict operational standards to ensure zero-error room allocation and guest management.
             </p>
-            <div className="flex items-center gap-4 p-4 bg-white dark:bg-slate-800 rounded-3xl border border-indigo-50 dark:border-slate-700 shadow-sm max-w-md">
-              <div className="w-12 h-12 bg-indigo-100 dark:bg-indigo-900/30 rounded-2xl flex items-center justify-center text-indigo-600 dark:text-indigo-400 shrink-0">
-                <MapPin size={24} />
+            <div className="flex items-center gap-5 p-6 bg-[#F9FAFB] rounded-xl border border-[#E5E7EB] max-w-md group hover:border-[#0F172A] transition-all duration-300">
+              <div className="w-12 h-12 bg-[#0F172A] rounded-lg flex items-center justify-center text-white shrink-0 shadow-md transition-transform group-hover:scale-105">
+                <MapPin size={24} className="text-[#14B8A6]" />
               </div>
               <div>
-                <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Primary Location</p>
-                <p className="text-sm font-bold text-slate-900 dark:text-white mt-0.5">Opposite ETree Bus Stand, Vijayawada</p>
+                <p className="text-[11px] font-bold text-[#9CA3AF] uppercase tracking-widest">Corporate HQ</p>
+                <p className="text-[16px] font-bold text-[#111827] mt-1">Opposite ETree Bus Stand, Vijayawada</p>
               </div>
             </div>
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
             {features.map((feature, i) => (
-              <div key={i} className="flex items-center gap-3 p-4 bg-white dark:bg-slate-800/50 rounded-2xl border border-indigo-50/50 dark:border-slate-800 hover:border-indigo-200 dark:hover:border-indigo-900/50 transition-all group">
-                <div className="w-10 h-10 bg-indigo-50 dark:bg-indigo-900/20 rounded-xl flex items-center justify-center text-indigo-600 dark:text-indigo-400 group-hover:scale-110 transition-transform">
-                  <feature.icon size={20} />
+              <div key={i} className="flex items-center gap-5 p-5 bg-[#F9FAFB] rounded-xl border border-[#E5E7EB] hover:bg-white hover:border-[#0F172A] transition-all group duration-300">
+                <div className="w-12 h-12 bg-white rounded-lg border border-[#E5E7EB] flex items-center justify-center text-[#0F172A] transition-all group-hover:bg-[#0F172A] group-hover:text-white shadow-sm">
+                  <feature.icon size={22} />
                 </div>
-                <span className="text-xs font-bold text-slate-700 dark:text-slate-300">{feature.label}</span>
+                <span className="text-[15px] font-bold text-[#6B7280] group-hover:text-[#111827] transition-colors">{feature.label}</span>
               </div>
             ))}
           </div>
@@ -377,11 +415,11 @@ const Dashboard = () => {
           <div className="w-24 h-24 bg-slate-50 dark:bg-slate-800 rounded-full flex items-center justify-center mx-auto mb-6">
             <Search size={40} className="text-slate-300 dark:text-slate-600" />
           </div>
-          <h3 className="text-2xl font-black text-slate-900 dark:text-white tracking-tight">No units matching filters</h3>
+          <h3 className="text-2xl font-bold text-slate-900 dark:text-white tracking-tight">No units matching filters</h3>
           <p className="text-slate-500 dark:text-slate-400 font-medium mt-2">Try adjusting your search query or status filter.</p>
           <button 
             onClick={() => {setSearchTerm(''); setFilterStatus('All');}}
-            className="mt-8 px-8 py-3 bg-indigo-600 text-white rounded-2xl font-bold shadow-xl shadow-indigo-600/20 hover:scale-105 transition-transform"
+            className="mt-8 px-8 py-3 bg-navy-900 text-white rounded-2xl font-semibold shadow-xl hover:scale-105 transition-transform"
           >
             Reset All Filters
           </button>
