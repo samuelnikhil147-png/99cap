@@ -381,18 +381,28 @@ const Dashboard = () => {
                             {stayDuration}d active
                           </p>
                         </div>
-                        {bed.status === 'Booked' && (
+                        <div className="flex gap-2">
+                          <button 
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              handleExtendStay(bed.id);
+                            }}
+                            className="flex-1 h-8 flex items-center justify-center gap-2 rounded-lg border border-[#0066CC] bg-white dark:bg-zinc-800 text-[12px] font-bold text-[#0066CC] hover:bg-[#0066CC] hover:text-white transition-all duration-200 active:scale-95 shadow-sm"
+                          >
+                            <Clock size={14} />
+                            Extend
+                          </button>
                           <button 
                             onClick={(e) => {
                               e.stopPropagation();
                               handleCheckout(bed);
                             }}
-                            className="w-full h-8 flex items-center justify-center gap-2 rounded-lg border border-[#EF4444] bg-white dark:bg-zinc-800 text-[12px] font-bold text-[#EF4444] hover:bg-[#EF4444] hover:text-white transition-all duration-200 active:scale-95 shadow-sm"
+                            className="flex-1 h-8 flex items-center justify-center gap-2 rounded-lg border border-[#EF4444] bg-white dark:bg-zinc-800 text-[12px] font-bold text-[#EF4444] hover:bg-[#EF4444] hover:text-white transition-all duration-200 active:scale-95 shadow-sm"
                           >
                             <LogOut size={14} />
                             Check Out
                           </button>
-                        )}
+                        </div>
                       </div>
                     )}
                   </div>

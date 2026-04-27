@@ -106,6 +106,25 @@ const CheckoutList = () => {
     }
   };
 
+  const handleExtendStay = async (bedId) => {
+    const days = window.prompt('Enter additional days to extend stay:');
+    if (!days || isNaN(days)) return;
+    
+    try {
+      const response = await fetch('https://99cap.vercel.app/_/backend/api/extend', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ bedId, additionalDays: days })
+      });
+      if (response.ok) {
+        notify(`Stay extended by ${days} days for Bed #${bedId}`, 'success');
+        fetchCheckouts();
+      }
+    } catch (error) {
+      notify('Extension failed', 'error');
+    }
+  };
+
   const reprintBill = (bed) => {
     const start = new Date(bed.customer.checkIn);
     const end = new Date(bed.customer.checkOut);
@@ -263,6 +282,13 @@ const CheckoutList = () => {
                           title="Reprint Bill"
                         >
                           <Download size={18} />
+                        </button>
+                        <button 
+                          onClick={() => handleExtendStay(bed.id)}
+                          className="p-3 bg-blue-50 dark:bg-blue-900/20 text-blue-600 dark:text-blue-400 rounded-xl hover:bg-blue-600 dark:hover:bg-blue-600 hover:text-white transition-all shadow-sm"
+                          title="Extend Stay"
+                        >
+                          <Clock size={18} />
                         </button>
                         <button 
                           onClick={() => handleCheckout(bed)}
