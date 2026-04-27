@@ -17,7 +17,7 @@ const Customers = () => {
         const mappedCustomers = data.map(c => ({
           ...c,
           id: `C-${c.bedId}-${Date.now()}`,
-          avatar: `https://ui-avatars.comhttps://99cap.vercel.app/_/backend/api/?name=${encodeURIComponent(c.name)}&background=random&color=fff&size=128`
+          avatar: c.photo || `https://ui-avatars.com/api/?name=${encodeURIComponent(c.name)}&background=random&color=fff&size=128`
         }));
         
         setCustomers(mappedCustomers);
@@ -98,6 +98,11 @@ const Customers = () => {
                 <div>
                   <p className="text-[10px] font-bold text-slate-400 dark:text-zinc-500 uppercase transition-colors">Aadhaar ID</p>
                   <p className="text-sm font-semibold text-[#000000] dark:text-white transition-colors">{customer.aadhar}</p>
+                  {customer.aadharPhoto && (
+                    <div className="mt-3 w-full h-40 rounded-2xl overflow-hidden border-2 border-zinc-100 dark:border-zinc-800 shadow-sm transition-colors">
+                      <img src={customer.aadharPhoto} alt="Aadhaar Card" className="w-full h-full object-cover" />
+                    </div>
+                  )}
                 </div>
               </div>
               <div className="flex items-center gap-4 text-slate-500 dark:text-zinc-400">

@@ -146,7 +146,11 @@ const BedBookingModal = ({ isOpen, onClose, selectedBed, onConfirm }) => {
   const handleFileChange = (e, field) => {
     const file = e.target.files[0];
     if (file) {
-      setFormData({ ...formData, [field]: URL.createObjectURL(file) });
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setFormData({ ...formData, [field]: reader.result });
+      };
+      reader.readAsDataURL(file);
     }
   };
 

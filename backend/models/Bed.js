@@ -15,8 +15,12 @@ const BedSchema = new mongoose.Schema({
     name: String,
     email: String,
     phone: String,
+    address: String,
+    aadhar: String,
     checkIn: Date,
-    checkOut: Date
+    checkOut: Date,
+    photo: String,
+    aadharPhoto: String
   },
   price: {
     type: Number,
