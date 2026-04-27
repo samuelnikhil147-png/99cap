@@ -235,19 +235,19 @@ const Customers = () => {
 
       {/* Fullscreen Image Preview */}
       {fullscreenImg && (
-        <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
-          <div className="absolute inset-0 bg-black/90 backdrop-blur-xl" onClick={() => setFullscreenImg(null)}></div>
-          <div className="relative z-10 max-w-5xl w-full max-h-[90vh] animate-in zoom-in-95 duration-300">
+        <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 lg:p-12">
+          <div className="absolute inset-0 bg-black/95 backdrop-blur-2xl" onClick={() => setFullscreenImg(null)}></div>
+          <div className="relative z-10 w-full h-full flex items-center justify-center">
             <button 
               onClick={() => setFullscreenImg(null)}
-              className="absolute -top-12 right-0 p-3 text-white/70 hover:text-white transition-colors flex items-center gap-2 font-bold"
+              className="absolute top-0 right-0 lg:-top-12 lg:-right-4 p-4 text-white/70 hover:text-white transition-colors flex items-center gap-2 font-bold z-20"
             >
-              <X size={24} /> Close Preview
+              <X size={28} /> <span className="hidden sm:inline">Close Preview</span>
             </button>
             <img 
               src={fullscreenImg} 
               alt="Fullscreen Preview" 
-              className="w-full h-full object-contain rounded-3xl shadow-2xl" 
+              className="max-w-full max-h-full object-contain rounded-xl lg:rounded-2xl shadow-2xl animate-in zoom-in-95 duration-300" 
             />
           </div>
         </div>
