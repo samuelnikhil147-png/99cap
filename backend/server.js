@@ -302,7 +302,7 @@ app.get('/api/customers', async (req, res) => {
   try {
     const beds = await Bed.find({ 
       status: { $in: ['Booked', 'Checkout Due Today', 'Overstayed'] } 
-    }).sort({ id: 1 });
+    }).sort({ id: 1 }).lean();
     
     const customers = beds.map(bed => ({
       ...bed.customer,
