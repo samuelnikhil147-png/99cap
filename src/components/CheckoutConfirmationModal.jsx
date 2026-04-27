@@ -106,7 +106,7 @@ const CheckoutConfirmationModal = ({ isOpen, onClose, data, onConfirm }) => {
             className="flex-[2] py-4 bg-indigo-600 text-white rounded-2xl font-black shadow-lg shadow-indigo-600/20 hover:bg-indigo-700 active:scale-95 transition-all flex items-center justify-center gap-2"
           >
             <CreditCard size={20} />
-            <span>Confirm & Print Bill</span>
+            <span>Collect Payment & Checkout</span>
           </button>
         </div>
       </div>

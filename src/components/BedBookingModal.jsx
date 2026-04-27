@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { X, User, Phone, MapPin, CreditCard, Camera, FileText, Calendar, Clock } from 'lucide-react';
+import { X, User, Phone, MapPin, CreditCard, Camera, FileText, Calendar, Clock, CheckCircle2 } from 'lucide-react';
 import { notify } from './Toast';
 
 const BedBookingModal = ({ isOpen, onClose, selectedBed, onConfirm }) => {
@@ -387,7 +387,7 @@ const BedBookingModal = ({ isOpen, onClose, selectedBed, onConfirm }) => {
           {/* Price Preview */}
           <div className="bg-[#6366F1] rounded-[14px] p-5 text-white flex items-center justify-between shadow-xl shadow-[#6366F1]/20 mt-5">
             <div>
-              <p className="text-[#B4B8FF] text-[11px] font-black uppercase tracking-widest">Total Bill Amount</p>
+              <p className="text-[#B4B8FF] text-[11px] font-black uppercase tracking-widest">Estimated Bill (Pay at Checkout)</p>
               <p className="text-sm font-medium opacity-90">Stay Duration: {days} days × ₹{pricePerDay}/day</p>
             </div>
             <div className="text-right">
@@ -412,8 +412,8 @@ const BedBookingModal = ({ isOpen, onClose, selectedBed, onConfirm }) => {
                 : "bg-slate-200 dark:bg-slate-800 text-slate-400 dark:text-slate-600 cursor-not-allowed"
               }`}
             >
-              <CreditCard size={20} />
-              <span>Confirm & Pay ₹{totalAmount}</span>
+              <CheckCircle2 size={20} />
+              <span>Confirm Booking</span>
             </button>
           </div>
         </form>
